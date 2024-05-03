@@ -1,0 +1,341 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    ViewData["Title"] = "CV Page";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div class="content-wrapper">
+    <!-- Content -->
+
+    <div class="container-xxl flex-grow-1 container-p-y">
+        <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Curriculum Vitae/</span> CV</h4>
+        <div class="row" id="listCV">
+            <div class="col-md-12">
+                <div class="card mb-4">
+                    <h5 class="card-header">
+                        <span class="text-muted fw-light">CV /</span>
+                        List CV
+                    </h5>
+                    <div class="card-body">
+                        <div class="mt-2">
+                            <button id="btnAdd" type="submit" class="btn btn-primary me-2" onclick="onAddNewCV()">Add New</button>
+
+                        </div>
+                        <br /><br />
+                        <div class="table-responsive ">
+                            <table class="table table-bordered " id="listData" width="100%" cellspacing="0">
+                                <caption>Data List CV</caption>
+                                <thead>
+                                    <tr>
+                                        <th class="headerBg" style="width:3%">
+                                            Action
+                                        </th>
+                                        <th class="headerBg" style="width:5%">
+                                            Name
+                                        </th>
+                                        <th class="headerBg" style="width:7%">
+                                            Position
+                                        </th>
+                                        <th class="headerBg" style="width:5%">
+                                            Gender
+                                        </th>
+                                        <th class="headerBg" style="width:5%">
+                                            Phone
+                                        </th>
+                                        <th class="headerBg" style="width:5%">
+                                            Email
+                                        </th>
+                                        <th class="headerBg" style="width:5%">
+                                            Total Experience
+                                        </th>
+                                    </tr>
+                                </thead>
+                            </table>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row" id="formCV" style="display:none;">
+            <div class="col-md-12">
+                <ul class="nav nav-pills flex-column flex-md-row mb-3">
+                    <li class="nav-item">
+                        <button id="navProfile" class="nav-link active" onclick="openProfile()"><i class="bx bx-user me-1"></i> Profile Details</button>
+                    </li>
+                    <li class="nav-item">
+                        <button id="navExp" class="nav-link "  onclick="openExp()"><i class="bx bx-briefcase-alt-2"></i> Experience</button>
+                    </li>
+
+                </ul>
+                <div class="card mb-4" id="cvform">
+                    <h5 class="card-header">
+                        <span class="text-muted fw-light">CV /</span>
+                        Profile Details
+                    </h5>
+
+                    <!-- Account -->
+                    <div class="card-body">
+                        <div class="d-flex align-items-start align-items-sm-center gap-4">
+                            <img src="~/theme/assets/img/avatars/1.png"
+                                 alt="user-avatar"
+                                 class="d-block rounded"
+                                 height="100"
+                                 width="100"
+                                 id="uploadedAvatar" />
+                            <div class="button-wrapper">
+                                <label for="upload" class="btn btn-primary me-2 mb-4" tabindex="0">
+                                    <span class="d-none d-sm-block">Upload new photo</span>
+                                    <i class="bx bx-upload d-block d-sm-none"></i>
+                                    <input type="file"
+                                           id="upload"
+                                           class="account-file-input"
+                                           hidden
+                                           accept="image/png, image/jpeg" />
+                                </label>
+                                <button type="button" class="btn btn-outline-secondary account-image-reset mb-4">
+                                    <i class="bx bx-reset d-block d-sm-none"></i>
+                                    <span class="d-none d-sm-block">Reset</span>
+                                </button>
+
+                                <p class="text-muted mb-0">Allowed JPG, GIF or PNG. Max size of 800K</p>
+                            </div>
+                        </div>
+                    </div>
+                    <hr class="my-0" />
+                    <div class="card-body">
+                        <form id="formAccountSettings" method="POST" onsubmit="return false">
+                            <div class="row">
+                                <div class="mb-3 col-md-6">
+                                    <label for="firstName" class="form-label">Full Name</label>
+                                    <input class="form-control" type="text" id="fullName" name="fullName" autofocus />
+                                </div>
+                                <div class="mb-3 col-md-6">
+                                    <label class="form-label" for="phoneNumber">Phone Number</label>
+                                    <div class="input-group input-group-merge">
+                                        <span class="input-group-text">IND (+62)</span>
+                                        <input type="number" id="phoneNumber" name="phoneNumber" class="form-control" placeholder="812 126 50199" />
+                                    </div>
+                                </div>
+                                <div class="mb-3 col-md-6">
+                                    <label class="form-label" for="position">Position</label>
+                                    <select id="position" class="select2 form-select">
+                                        <option value="">Select</option>
+                                        <option value="Software Engineer">Software Engineer</option>
+                                        <option value="Senior Software Engineer">Senior Software Engineer</option>
+                                        <option value="IT Manager">IT Manager</option>
+                                        <option value="QA Automation">QA Automation</option>
+                                        <option value="System Analyst">System Analyst</option>
+                                        <option value="Business Analyst">Business Analyst</option>
+                                        <option value="Implementer">Implementer</option>
+                                        <option value="Technical Writer">Technical Writer</option>
+                                        <option value="Customer Service">Customer Service</option>
+                                    </select>
+                                </div>
+                                <div class="mb-3 col-md-6">
+                                    <label for="email" class="form-label">E-mail</label>
+                                    <input class="form-control" type="text" id="email" name="email" placeholder="john.doe@example.com" />
+                                </div>
+                                <div class="mb-3 col-md-6">
+                                    <label for="ktp" class="form-label">KTP Number</label>
+                                    <input class="form-control" type="number" id="ktp" name="ktp" />
+                                </div>
+                                <div class="mb-3 col-md-6">
+                                    <label for="npwp" class="form-label">NPWP Number</label>
+                                    <input class="form-control" type="text" id="npwp" name="npwp" placeholder="74.728.166.5-117.000" />
+                                </div>
+                                <div class="mb-3 col-md-6">
+                                    <label for="birthDate" class="form-label">Birth Date</label>
+                                    <input class="form-control" type="date" id="birthDate" />
+                                </div>
+                                <div class="mb-3 col-md-6">
+                                    <label class="form-label" for="gender">Gender</label>
+                                    <select id="gender" class="select2 form-select">
+                                        <option value="">Select</option>
+                                        <option value="1">Male</option>
+                                        <option value="2">Female</option>
+                                    </select>
+                                </div>
+                                <div class="mb-3 col-md-6">
+                                    <label class="form-label" for="maritalID">Marital Status</label>
+                                    <select id="maritalID" class="select2 form-select">
+                                        <option value="">Select</option>
+                                        <option value="1">Married</option>
+                                        <option value="2">Single</option>
+                                        <option value="3">Divorce</option>
+                                    </select>
+                                </div>
+                                <div class="mb-3 col-md-6">
+                                    <label for="countExp" class="form-label">Experience Total</label>
+                                    <input class="form-control" type="number" id="countExp" name="countExp" placeholder="auto calculate.." readonly />
+                                </div>
+                                <div class="mb-2 col-md-2">
+                                    <label class="form-label" for="eduType">Education Type</label>
+                                    <select id="eduType" class="select2 form-select">
+                                        <option value="">Select</option>
+                                        <option value="S1">S1</option>
+                                        <option value="S2">S2</option>
+                                        <option value="D3">D3</option>
+                                    </select>
+                                </div>
+                                <div class="mb-2 col-md-2">
+                                    <label class="form-label" for="eduType">Focus Studied</label>
+                                    <select id="eduType" class="select2 form-select">
+                                        <option value="">Select</option>
+                                        <option value="ComputerEngineering">Computer Engineering</option>
+                                        <option value="InformationSystem">Information System</option>
+                                        <option value="ComputerManagement">Computer Management</option>
+                                    </select>
+                                </div>
+                                <div class="mb-3 col-md-4">
+                                    <label for="eduName" class="form-label">Education Name</label>
+                                    <input class="form-control" type="text" id="eduName" name="eduName" placeholder="type your university name.." />
+                                </div>
+                                <div class="mb-2 col-md-2">
+                                    <label for="eduIPK" class="form-label">IPK</label>
+                                    <input class="form-control" type="number" id="eduIPK" name="eduIPK" placeholder="4.00" />
+                                </div>
+                                <div class="mb-2 col-md-2">
+                                    <label for="eduYear" class="form-label">Finish Year</label>
+                                    <input class="form-control" type="number" id="eduYear" name="eduYear" placeholder="2024" />
+                                </div>
+                                <div class="mb-3 col-md-6">
+                                    <label for="expSallary" class="form-label">Expected Sallary</label>
+                                    <div class="input-group input-group-merge">
+                                        <span class="input-group-text">Rp.</span>
+                                        <input type="number" id="expSallary" name="expSallary" class="form-control" />
+                                    </div>
+                                </div>
+                                <div class="mb-3 col-md-6">
+                                    <label for="isNego" class="form-label">Negotiable</label>
+                                    <div class="form-check form-switch mb-2">
+                                        <input class="form-check-input" type="checkbox" id="isNego" />
+                                        <label class="form-check-label" for="isNego">True</label>
+                                    </div>
+                                </div>
+                                <div class="mb-3 col-md-6">
+                                    <label for="hardSkill" class="form-label">Hard Skill</label>
+                                    <textarea class="form-control" id="hardSkill" rows="3" placeholder="if more than one pelase type with comma (,)Ex :.NET, C#, POSTGRE SQL...."></textarea>
+                                </div>
+                                <div class="mb-3 col-md-6">
+                                    <label for="softSkill" class="form-label">Soft Skill</label>
+                                    <textarea class="form-control" id="softSkill" rows="3" placeholder="if more than one pelase type with comma (,)Ex :Management, Documentation...."></textarea>
+                                </div>
+                                <div class="mb-3 col-md-12">
+                                    <label for="address" class="form-label">Address</label>
+                                    <textarea class="form-control" id="address" rows="4"></textarea>
+                                </div>
+                            </div>
+                            <div class="mt-2">
+                                <button type="submit" class="btn btn-primary me-2">Save changes</button>
+                                <button type="reset" class="btn btn-outline-danger" onclick="OnCloseCV()">Cancel</button>
+                            </div>
+                        </form>
+                    </div>
+                    <!-- /Account -->
+                </div>
+                
+                <div class="card mb-4" id="expform" style="display:none;">
+                    <h5 class="card-header">
+                        <span class="text-muted fw-light">CV /</span>
+                        <label for="cvID">Experience</label>
+                    </h5>
+
+
+                    <hr class="my-0" />
+                    <div class="card-body">
+                        <form id="formExperience" method="POST" onsubmit="return false">
+                            <div class="row">
+                                <div class="mb-2 col-md-2">
+                                    <label for="start" class="form-label">Start Year</label>
+                                    <input class="form-control" type="number" id="start" name="start" placeholder="2015" />
+                                </div>
+                                <div class="mb-2 col-md-2">
+                                    <label for="end" class="form-label">End Year</label>
+                                    <input class="form-control" type="number" id="end" name="end" placeholder="2024" />
+                                </div>
+                                <div class="mb-3 col-md-3"></div>
+                                <div class="mb-3 col-md-3"></div>
+                                <div class="mb-3 col-md-6">
+                                    <label for="companyName" class="form-label">Company Name</label>
+                                    <input class="form-control" type="text" id="companyName" name="companyName" autofocus />
+                                </div>
+                                <div class="mb-3 col-md-6">
+                                    <label class="form-label" for="role">Role</label>
+                                    <select id="role" class="select2 form-select">
+                                        <option value="">Select</option>
+                                        <option value="Software Engineer">Software Engineer</option>
+                                        <option value="Senior Software Engineer">Senior Software Engineer</option>
+                                        <option value="IT Manager">IT Manager</option>
+                                        <option value="QA Automation">QA Automation</option>
+                                        <option value="System Analyst">System Analyst</option>
+                                        <option value="Business Analyst">Business Analyst</option>
+                                        <option value="Implementer">Implementer</option>
+                                        <option value="Technical Writer">Technical Writer</option>
+                                        <option value="Customer Service">Customer Service</option>
+                                    </select>
+                                </div>
+
+                                <div class="mb-3 col-md-6">
+                                    <label for="tools" class="form-label">Tech Tools</label>
+                                    <textarea class="form-control" id="tools" rows="3" placeholder="if more than one pelase type with comma (,)Ex :.NET, C#, POSTGRE SQL...."></textarea>
+                                </div>
+                                <div class="mb-3 col-md-6">
+                                    <label for="respDesc" class="form-label">Responsibility</label>
+                                    <textarea class="form-control" id="respDesc" rows="3"></textarea>
+                                </div>
+                                <div class="mb-3 col-md-12">
+                                    <label for="addressComp" class="form-label">Address</label>
+                                    <textarea class="form-control" id="addressComp" rows="4"></textarea>
+                                </div>
+                            </div>
+                            <div class="mt-2">
+                                <button type="submit" class="btn btn-primary me-2">Save changes</button>
+                                <button type="reset" class="btn btn-outline-secondary">Cancel</button>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="card-body">
+                        <div class="mt-2">
+                            <button id="btnAdd"  type="submit" class="btn btn-primary me-2" onclick="onAddNew()">Add New</button>
+                            
+                        </div>
+                        <br /><br />
+                        <div class="table-responsive ">
+                            <table class="table table-bordered " id="listData" width="100%" cellspacing="0">
+                                <caption>Data Experience</caption>
+                                <thead>
+                                    <tr>
+                                        <th class="headerBg" style="width:3%">
+                                            Action
+                                        </th>
+                                        <th class="headerBg" style="width:5%">
+                                           Company Name
+                                        </th>
+                                        <th class="headerBg" style="width:7%">
+                                            Role
+                                        </th>
+                                        <th class="headerBg" style="width:5%">
+                                            Start Year
+                                        </th>
+                                        <th class="headerBg" style="width:5%">
+                                            End Year
+                                        </th>
+                                    </tr>
+                                </thead>
+                            </table>
+
+                        </div>
+
+                    </div>
+                    <!-- /Account -->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="~/theme/assets/js/pages-account-settings-account.js"></script>
+<script src="~/myjs/cvdetails.js"></script>

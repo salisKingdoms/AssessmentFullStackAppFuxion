@@ -10,7 +10,7 @@ $(document).ready(function () {
         lengthChange: false,
         searching: false
     });
-
+    OnLoadListCV();
     table = $('#listDataExp').DataTable({
         lengthMenu: [],
         lengthChange: false,
@@ -222,10 +222,7 @@ function OnUploadImage() {
     for (var i = 0; i < files.length; i++) {
         filedata.append("atc", files[i]);
     }
-
-   
-   // const fileInput = document.querySelector('.account-file-input');
-        
+  
     $.ajax({
         type: "POST",
         url: "/CV/DataUpload",
@@ -241,8 +238,6 @@ function OnUploadImage() {
         }
     });
 }
-
-
 
 function OnSaveCV() {
     if ($('#cvID').val() == '') {
@@ -302,9 +297,8 @@ function OnSaveCV() {
                     toastr.success("CV success to submitted");
                     setTimeout(() => {
                         $('#mySpinner').css('display', 'none');
-                        $('#listCV').css('display', 'block');
-                        $('#formCV').css('display', 'none');
-                   
+                        
+                        OnLoadListCV();
                     }, 500);
                 }
                 else {
@@ -317,4 +311,59 @@ function OnSaveCV() {
 
     }
    
+}
+
+function OnLoadListCV() {
+    $('#mySpinner').css('display', 'block');
+    var dataHeader = { };
+
+    $.ajax({
+        type: "GET",
+        url: "/CV/GetListCV",
+        data: dataHeader,
+        processData: false,
+        contentType: false,
+        success: function (respon) {
+            var dataresp = JSON.parse(respon);
+            if (dataresp.is_ok) {
+                if (dataresp.listCV.length > 0) {
+
+                    $.each(dataresp.listCV, function (i, data) {//Name,pos,gender,phone,email,total
+                        var genders = (data.gender == 2 ? "Female" : "Male");
+                        var htmlRow = $("<tr>" + '<td style="display:none; text-align:center;">' + data.employee_no + "</td>" +
+                            '<td  style="text-align: center;">' + '<button id=' + data.employee_no + ' class="btn btn-primary me-2"  type="submit"  onclick=OnEditCV(this); >Edit</button>' + "</td>" +
+                            '<td  style="text-align: center;">' + '<button id=' + data.employee_no + ' class="btn btn-danger me-2"  type="submit"  onclick=OnDeletedCV(this); >Delete</button>' + "</td>" +
+                            '<td style="text-align:center;">' + data.employee_name + "</td>" +
+                            '<td style="text-align:center;">' + data.position + "</td>" +
+                            '<td style="text-align:center;">' + genders + "</td>" +
+                            '<td style="text-align:center;">' + data.phone + "</td>" +
+                            '<td style="text-align:center;">' + data.email + "</td>" +
+                            '<td style="text-align:center;">' + data.total_exp + "</td></tr>");
+                        dtCV.row.add($(htmlRow)).draw();
+                    });
+                    //var row = dtCV.row(0).node();
+                    //$(row).find('td').eq(0).attr('colspan', 2);
+                   // $('#listData thead th:eq(0)').next().remove();
+                    $('#listCV').css('display', 'block');
+                    $('#formCV').css('display', 'none');
+                    $('#mySpinner').css('display', 'none');
+
+                }
+                else {
+                    $('#listCV').css('display', 'block');
+                    $('#formCV').css('display', 'none');
+                    console.log("employee not found");
+                    $('#mySpinner').css('display', 'none');
+                }
+            }
+        }
+    });
+}
+
+function OnEditCV(obj) {
+
+}
+
+function OnDeletedCV(obj) {
+
 }

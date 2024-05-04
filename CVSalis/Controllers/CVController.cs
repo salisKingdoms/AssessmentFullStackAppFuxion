@@ -84,9 +84,17 @@ namespace CVSalis.Controllers
                     return Json(result);
                 }
 
+                if (param.Experience_List != null && param.Experience_List.Count > 0)
+                {
+                    var lasttExp = param.Experience_List.Last().periode_end;
+                    var firstExp = param.Experience_List.First().periode_start;
+                    param.total_exp = lasttExp - firstExp;
+                }
                 //save CV
                 param.isCreated = false;
                 var save = _cvRepo.CreateOrUpdateCV(param);
+                result.is_ok = true;
+                result.messageUI = "success submit";
             }
             catch (Exception ex)
             {

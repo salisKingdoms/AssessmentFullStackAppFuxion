@@ -4,7 +4,7 @@
     {
         public long employee_no { get; set; }
         public string? employee_name { get; set; }
-        public int phone { get; set; }
+        public string phone { get; set; }
         public string email { get; set; }
         public DateTime birth_date { get; set; }
         public string address { get; set; }

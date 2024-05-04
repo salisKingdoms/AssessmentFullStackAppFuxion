@@ -3,16 +3,19 @@ using Newtonsoft.Json;
 using System.Reflection;
 using CVSalis.Data.Dto;
 using CVSalis.Data.Repo;
+using Microsoft.AspNetCore.Hosting;
 
 namespace CVSalis.Controllers
 {
     public class CVController : Controller
     {
         private readonly ICVRepo _cvRepo;
-
-        public CVController(ICVRepo cVRepo)
+        private IWebHostEnvironment webHostEnvironment;
+        string localPath = "\\Image\\";
+        public CVController(ICVRepo cVRepo, IWebHostEnvironment environment)
         {
             _cvRepo = cVRepo;
+            webHostEnvironment = environment;
         }
         public IActionResult CurriculumVitae()
         {
@@ -39,9 +42,17 @@ namespace CVSalis.Controllers
                     return Json(result);
                 }
 
-                //save CV
+                //save CV and calculate total exp
+                if(param.Experience_List != null && param.Experience_List.Count > 0)
+                {
+                    var lasttExp = param.Experience_List.Last().periode_end;
+                    var firstExp = param.Experience_List.First().periode_start;
+                    param.total_exp = lasttExp - firstExp;
+                }
                 param.isCreated = true;
                 var save = _cvRepo.CreateOrUpdateCV(param);
+                result.is_ok = true;
+                result.messageUI = "success submit";
             }
             catch (Exception ex)
             {
@@ -159,6 +170,43 @@ namespace CVSalis.Controllers
 
             }
             return JsonConvert.SerializeObject(result);
+        }
+
+        public string GetActualPath(string FileName)
+        {
+            return Path.Combine(webHostEnvironment.WebRootPath + localPath, FileName);
+        }
+
+        public async Task<ActionResult> DataUpload()
+        {
+            //string response = string.Empty;
+            RespUploadFile resp = new RespUploadFile();
+            var Files = Request.Form.Files;
+            try
+            {
+                foreach (IFormFile source in Files)
+                {
+                    string FileName = source.FileName;
+
+                    string filePath = GetActualPath(FileName);
+
+                    if (System.IO.File.Exists(filePath))
+                        System.IO.File.Delete(filePath);
+
+                    using (FileStream stream = System.IO.File.Create(filePath))
+                    {
+                        await source.CopyToAsync(stream);
+                        resp.message = "OK";
+                        resp.filePath = FileName;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                resp.message = "Error: " + ex.Message.ToString();
+            }
+
+            return Ok(resp);
         }
     }
 }

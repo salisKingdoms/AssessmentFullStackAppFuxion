@@ -2,6 +2,8 @@
 var dtCV = null;
 var tempExpNew = [];
 var rowTempExpDelete = 0;
+var isNego = false;
+var pathImage = "";
 $(document).ready(function () {
     dtCV = $('#listData').DataTable({
         lengthMenu: [],
@@ -35,6 +37,36 @@ function OnAddNewCV() {
     $('#listCV').css('display', 'none');
     $('#formCV').css('display', 'block');
     $('#listExp').css('display', 'none');
+
+    //test disini dulu getnya
+    //var dataHeader = {
+    //    id: 2 //parseInt($('#employeeID').val())
+    //};
+    //$.ajax({
+    //    type: "GET",
+    //    url: "/CV/GetDetailCVById",
+    //    data: dataHeader,
+    //    success: function (respon) {
+    //        var dataresp = JSON.parse(respon);
+    //        if (dataresp.is_ok) {
+    //            $('#uploadedAvatar').attr('src', dataresp.dataDetail.image);
+    //            //$('#employeeID').val(dataresp.ID);
+    //            //$('#employeeName').val(dataresp.name);
+    //            //$('#birthDate').val(moment(dataresp.birth_date).format('YYYY-MM-DD'));
+    //            //$('#employeeNIK').val(dataresp.nik);
+    //            //$('#sallary').val(dataresp.sallary);
+    //            //$('#address').val(dataresp.address);
+    //            //$('#employeeNIK').prop('disabled', true);;
+    //            //$('#loadingPanel').css('display', 'none');
+    //        }
+    //        else {
+    //            console.log("employee not found");
+    //            toastr.error(dataresp.messageUI);
+    //            $('#loadingPanel').css('display', 'none');
+    //        }
+    //    }
+
+    //});
 }
 
 function OnCloseCV() {
@@ -66,6 +98,19 @@ function startKeyUp() {
 function endKeyUp() {
     if ($('#end').val().length > 4)
         $('#end').val(($('#end').val()).slice(0, 4));
+}
+
+function OnChangeNegotiable() {
+    if ($('#isNego').val() == "0") {
+        $('#isNego').val("1");
+        isNego = true;
+        $('#lbNego').text('True');
+    }
+    else {
+        isNego = false;
+        $('#lbNego').text('False');
+        $('#isNego').val("0");
+    }
 }
 
 function onAddNewExp(obj, id) {
@@ -169,8 +214,56 @@ function OnCloseModal() {
     $('#modalExpTemp').modal("hide");
 }
 
+function OnUploadImage() {
+ 
+    var uploadfile = document.getElementById("upload");
+    var files = uploadfile.files;
+    var filedata = new FormData();
+    for (var i = 0; i < files.length; i++) {
+        filedata.append("atc", files[i]);
+    }
+
+   
+   // const fileInput = document.querySelector('.account-file-input');
+        
+    $.ajax({
+        type: "POST",
+        url: "/CV/DataUpload",
+        data: filedata,
+        processData: false,
+        contentType: false,
+        success: function (response) {
+            if (response.message == "OK") {
+                pathImage = response.filePath;
+                $('#uploadedAvatar').attr('src', "/image/" + pathImage );
+                console.log(pathImage);
+            }
+        }
+    });
+}
+
+
+
 function OnSaveCV() {
     if ($('#cvID').val() == '') {
+        $('#mySpinner').css('display', 'block');
+        var mappingDetail = [];
+        if (tempExpNew.length > 0) {
+            $.each(tempExpNew, function (i, data) {
+                var items = {
+                    employee_id: 0,
+                    company: data.companyName,
+                    company_address: data.compAddress,
+                    role: data.role,
+                    periode_start: data.startYear,
+                    periode_end: data.endYear,
+                    resposibility_desc: data.responsibility,
+                    tech_tools: data.tools
+                };
+                mappingDetail.push(items);
+            });
+        }
+
         var dataCV = {
             isCreated: true,
             employee_no: 0,
@@ -180,7 +273,7 @@ function OnSaveCV() {
             birth_date: $('#birthDate').val(),
             address: $('#address').val(),
             ktp: $('#ktp').val(),
-            image: "",
+            image: "/image/" + pathImage, 
             soft_skill: $('#softSkill').val(),
             hard_skill: $('#hardSkill').val(),
             gender: $('#gender').val(),
@@ -194,9 +287,9 @@ function OnSaveCV() {
             npwp: $('#npwp').val(),
             position: $('#position').val(),
             focus_education: $('#eduType').val(),
-            is_negotiable: $('#isNego').val(),
+            is_negotiable: isNego,
             is_deleted: false,
-            Experience_List: tempExpNew
+            Experience_List: mappingDetail
         };
 
         $.ajax({
@@ -208,15 +301,16 @@ function OnSaveCV() {
 
                     toastr.success("CV success to submitted");
                     setTimeout(() => {
+                        $('#mySpinner').css('display', 'none');
                         $('#listCV').css('display', 'block');
                         $('#formCV').css('display', 'none');
-                       // searchDataListEmployee();
+                   
                     }, 500);
                 }
                 else {
                     console.log("Invoice failed to submitted");
                     toastr.error(respon.messageUI);
-
+                    $('#mySpinner').css('display', 'none');
                 }
             }
         });

@@ -76,11 +76,11 @@
                         <span class="text-muted fw-light">CV /</span>
                         Profile Details
                     </h5>
-
+                    
                     <!-- Account -->
                     <div class="card-body">
                         <div class="d-flex align-items-start align-items-sm-center gap-4">
-                            <img src="~/theme/assets/img/avatars/1.png"
+                            <img src="~/theme/assets/img/avatars/1.png" 
                                  alt="user-avatar"
                                  class="d-block rounded"
                                  height="100"
@@ -91,16 +91,12 @@
                                     <span class="d-none d-sm-block">Upload new photo</span>
                                     <i class="bx bx-upload d-block d-sm-none"></i>
                                     <input type="file"
-                                           id="upload"
+                                           id="upload" name="upload"
                                            class="account-file-input"
                                            hidden
-                                           accept="image/png, image/jpeg" />
+                                           accept="image/png, image/jpeg"  onchange="OnUploadImage()"/>
                                 </label>
-                                <button type="button" class="btn btn-outline-secondary account-image-reset mb-4">
-                                    <i class="bx bx-reset d-block d-sm-none"></i>
-                                    <span class="d-none d-sm-block">Reset</span>
-                                </button>
-
+                               
                                 <p class="text-muted mb-0">Allowed JPG, GIF or PNG. Max size of 800K</p>
                             </div>
                         </div>
@@ -213,8 +209,8 @@
                                 <div class="mb-3 col-md-6">
                                     <label for="isNego" class="form-label">Negotiable</label>
                                     <div class="form-check form-switch mb-2">
-                                        <input class="form-check-input" type="checkbox" id="isNego" />
-                                        <label class="form-check-label" for="isNego">True</label>
+                                        <input class="form-check-input" type="checkbox" id="isNego" value="0" onclick="OnChangeNegotiable()" />
+                                        <label class="form-check-label" for="isNego" id="lbNego">False</label>
                                     </div>
                                 </div>
                                 <div class="mb-3 col-md-6">

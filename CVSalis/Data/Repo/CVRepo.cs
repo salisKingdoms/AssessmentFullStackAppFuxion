@@ -119,7 +119,7 @@ namespace CVSalis.Data.Repo
                         var reqExp = new CreateExperience
                         {
                             isCreated = true,
-                            employee_id = req.employee_id,
+                            employee_id = getLasID.Result.employee_no,
                             company = req.company,
                             role = req.role,
                             periode_start = req.periode_start,
@@ -173,8 +173,8 @@ namespace CVSalis.Data.Repo
             try
             {
                 List<GetDataExperience> detailExp = new List<GetDataExperience>();
-                string query = "SELECT * FROM ms_employee a" +
-                               "LEFT JOIN experience_employee b on a.employee_no = b.employee_id" +
+                string query = "SELECT * FROM ms_employee a " +
+                               "LEFT JOIN experience_employee b on a.employee_no = b.employee_id " +
                                "WHERE a.employee_no =@id";
 
                 var param = new Dictionary<string, object>
@@ -187,18 +187,18 @@ namespace CVSalis.Data.Repo
                 {
                     foreach (var exp in dataDB)
                     {
-                        detailExp.Add(new GetDataExperience
-                        {
-                            id = exp.id,
-                            employee_id = exp.employee_id,
-                            company = exp.company,
-                            role = exp.role,
-                            periode_start = exp.periode_start,
-                            periode_end = exp.periode_end,
-                            resposibility_desc = exp.resposibility_desc,
-                            company_address = exp.company_address,
-                            tech_tools = exp.tech_tools
-                        });
+                        //detailExp.Add(new GetDataExperience
+                        //{
+                        //    id = exp.id.Value,
+                        //    employee_id = exp.employee_id.Value,
+                        //    company = exp.company,
+                        //    role = exp.role,
+                        //    periode_start = exp.periode_start.Value,
+                        //    periode_end = exp.periode_end.Value,
+                        //    resposibility_desc = exp.resposibility_desc,
+                        //    company_address = exp.company_address,
+                        //    tech_tools = exp.tech_tools
+                        //});
 
                         dataCV.employee_no = exp.employee_no;
                         dataCV.employee_name = exp.employee_name;
@@ -276,8 +276,8 @@ namespace CVSalis.Data.Repo
                 {"tech_tools",request.tech_tools },
                 {"created_by",request.created_by },
                 {"created_at",request.created_at },
-                {"updated_by",request.updated_by },
-                {"updated_at",request.updated_at }
+                {"updated_by",!request.isCreated ? request.updated_by : "" },
+                {"updated_at",!request.isCreated ? request.updated_at :null }
             };
 
                 if (!request.isCreated)

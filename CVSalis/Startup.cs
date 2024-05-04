@@ -37,7 +37,7 @@ namespace CVSalis
                 options.MultipartHeadersLengthLimit = int.MaxValue;
             });
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
-
+            
             services.AddSingleton<DataContext>();
             services.AddScoped<ICVRepo, CVRepo>();
 

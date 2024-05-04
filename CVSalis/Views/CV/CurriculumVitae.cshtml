@@ -231,7 +231,7 @@
                                 </div>
                             </div>
                             <div class="mt-2">
-                                <button type="submit" class="btn btn-primary me-2 ">Save changes</button>
+                                <button type="submit" class="btn btn-primary me-2 " onclick="OnSaveCV()">Save changes</button>
                                 <button type="reset" class="btn btn-outline-danger" onclick="OnCloseCV()">Cancel</button>
                             </div>
                         </form>
@@ -252,11 +252,11 @@
                             <div class="row">
                                 <div class="mb-2 col-md-2">
                                     <label for="start" class="form-label">Start Year</label>
-                                    <input class="form-control" type="number" id="start" name="start" placeholder="2015" />
+                                    <input class="form-control" type="number" id="start" name="start" maxlength="4" placeholder="2015" onkeyup="startKeyUp()" />
                                 </div>
                                 <div class="mb-2 col-md-2">
                                     <label for="end" class="form-label">End Year</label>
-                                    <input class="form-control" type="number" id="end" name="end" placeholder="2024" />
+                                    <input class="form-control" type="number" id="end" name="end" maxlength="4" placeholder="2024" onkeyup="endKeyUp()" />
                                 </div>
                                 <div class="mb-3 col-md-3"></div>
                                 <div class="mb-3 col-md-3"></div>
@@ -295,7 +295,7 @@
                             </div>
                             <div class="mt-2">
                                 <button type="submit" class="btn btn-primary me-2" onclick="onAddNewExp()">Save changes</button>
-                                <button type="reset" class="btn btn-outline-secondary">Cancel</button>
+                                <button type="reset" class="btn btn-outline-secondary" onclick="onCloseExpForm()">Cancel</button>
                             </div>
                         </form>
                     </div>
@@ -304,7 +304,7 @@
                     <!-- /Account -->
                 </div>
 
-                <div class="card mb-4" id="listExp">
+                <div class="card mb-4" id="listExp" style="display:none;">
                     <h5 class="card-header">
                         <span class="text-muted fw-light">CV /</span>
                         <label for="cvID">List Experience</label>
@@ -371,6 +371,20 @@
                            Yes
                         </button>
                         <button type="reset" class="btn btn-outline-secondary" onclick="OnCloseModal()">Cancel</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="modalExpAlert" aria-labelledby="modalAlertExp" tabindex="-1" style="display: none;color:lightpink;" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-body">
+                        <h2 style="color:red;"><b>"Experience cannot be empty"</b></h2>
+                        <h2 style="color:red;"><b>"Please Fill Experience"</b></h2>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="reset" class="btn btn-outline-secondary" onclick="OnCloseAlert()">Close</button>
                     </div>
                 </div>
             </div>

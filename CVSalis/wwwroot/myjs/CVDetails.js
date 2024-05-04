@@ -1,7 +1,14 @@
 ﻿var table = null;
+var dtCV = null;
 var tempExpNew = [];
 var rowTempExpDelete = 0;
 $(document).ready(function () {
+    dtCV = $('#listData').DataTable({
+        lengthMenu: [],
+        lengthChange: false,
+        searching: false
+    });
+
     table = $('#listDataExp').DataTable({
         lengthMenu: [],
         lengthChange: false,
@@ -13,7 +20,7 @@ function openExp() {
     $('#navProfile').removeClass('active');
     $('#navExp').addClass('active');
     $('#cvform').css('display', 'none');
-    //$('#expform').css('display', 'block');
+    $('#listExp').css('display', 'block');
 }
 
 function openProfile() {
@@ -21,11 +28,13 @@ function openProfile() {
     $('#navExp').removeClass('active');
     $('#cvform').css('display', 'block');
     $('#expform').css('display', 'none');
+    $('#listExp').css('display', 'none');
 }
 
 function OnAddNewCV() {
     $('#listCV').css('display', 'none');
     $('#formCV').css('display', 'block');
+    $('#listExp').css('display', 'none');
 }
 
 function OnCloseCV() {
@@ -39,50 +48,73 @@ function addExperience() {
     $('#listExp').css('display', 'none');
 }
 
-function onAddNewExp(obj, id) {
-    $('#listExp').css('display', 'block');
-    //var table = $('#listDataExp').DataTable({
-    //    lengthMenu: [],
-    //    lengthChange: false,
-    //    searching: false
-    //});
-    $('#listCV').css('display', 'none');
-    $('#formCV').css('display', 'block');
-    var totalRow = table.rows().count();
-    var dataExp = {
-        indexRow: totalRow+1,
-        empID: $('#cvID').val(),
-        startYear: $('#start').val(),
-        endYear: $('#end').val(),
-        role: $('#role').val(),
-        companyName: $('#companyName').val(),
-        compAddress: $('#addressComp').val(),
-        tools: $('#tools').val(),
-        responsibility: $('#respDesc').val()
-    };
-
-    console.log(dataExp);
-    tempExpNew.push(dataExp);
-    var htmlRow = $("<tr>" + '<td style="display:none; text-align:center;">' + 0 + "</td>" +
-        '<td style="text-align: center;">' + '<button class="btn btn-danger me-2"  type="submit"  onclick=OnDeletedExpNew(' + dataExp.indexRow + '); >Delete</button>' + "</td>" +
-        '<td style="text-align:center;">' + dataExp.companyName + "</td>" +
-        '<td style="text-align:center;">' + dataExp.role + "</td>" +
-        '<td style="text-align:center;">' + dataExp.compAddress + "</td>" +
-        '<td style="text-align:center;">' + dataExp.startYear + "</td>" +
-        '<td style="text-align:center;">' + dataExp.endYear + "</td>" +
-        '<td style="text-align:center;">' + dataExp.tools + "</td>" +
-        '<td style="text-align:center;">' + dataExp.responsibility + "</td></tr>");
-
-    table.row.add($(htmlRow)).draw();
-    //clear form 
+function onCloseExpForm() {
     $('#expform').css('display', 'none');
-    $('#start').empty();
-    $('#end').empty();
-    //$('#role').empty();
-    $('#companyName').empty();
-    $('#addressComp').empty();
-    $('#tools').empty();
-    $('#respDesc').empty();
+    $('#listExp').css('display', 'block');
+}
+
+function OnCloseAlert() {
+    $('#modalExpAlert').css('display', 'none');
+    $('#modalExpAlert').modal("hide");
+}
+
+function startKeyUp() {
+    if ($('#start').val().length > 4)
+        $('#start').val(($('#start').val()).slice(0, 4));
+}
+
+function endKeyUp() {
+    if ($('#end').val().length > 4)
+        $('#end').val(($('#end').val()).slice(0, 4));
+}
+
+function onAddNewExp(obj, id) {
+    if ($('#start').val() == '' && $('#end').val() == ''  && $('#role').val() == '' && $('#companyName').val() == '' && $('#addressComp').val() == '' && $('#tools').val() == '' && $('#respDesc').val() == '') {
+        $('#modalExpAlert').css('display', 'block');
+        $('#modalExpAlert').modal("show");
+    }
+    else {
+        $('#listExp').css('display', 'block');
+
+        $('#listCV').css('display', 'none');
+        $('#formCV').css('display', 'block');
+        var totalRow = table.rows().count();
+        var dataExp = {
+            indexRow: totalRow + 1,
+            empID: $('#cvID').val(),
+            startYear: $('#start').val(),
+            endYear: $('#end').val(),
+            role: $('#role').val(),
+            companyName: $('#companyName').val(),
+            compAddress: $('#addressComp').val(),
+            tools: $('#tools').val(),
+            responsibility: $('#respDesc').val()
+        };
+
+        console.log(dataExp);
+        tempExpNew.push(dataExp);
+        var htmlRow = $("<tr>" + '<td style="display:none; text-align:center;">' + 0 + "</td>" +
+            '<td style="text-align: center;">' + '<button class="btn btn-danger me-2"  type="submit"  onclick=OnDeletedExpNew(' + dataExp.indexRow + '); >Delete</button>' + "</td>" +
+            '<td style="text-align:center;">' + dataExp.companyName + "</td>" +
+            '<td style="text-align:center;">' + dataExp.role + "</td>" +
+            '<td style="text-align:center;">' + dataExp.compAddress + "</td>" +
+            '<td style="text-align:center;">' + dataExp.startYear + "</td>" +
+            '<td style="text-align:center;">' + dataExp.endYear + "</td>" +
+            '<td style="text-align:center;">' + dataExp.tools + "</td>" +
+            '<td style="text-align:center;">' + dataExp.responsibility + "</td></tr>");
+
+        table.row.add($(htmlRow)).draw();
+        //clear form 
+        $('#expform').css('display', 'none');
+        $('#start').val('');
+        $('#end').val('');
+        $('#role').val('');
+        $('#companyName').val('');
+        $('#addressComp').val('');
+        $('#tools').val('');
+        $('#respDesc').val('');
+    }
+    
 
 }
 
@@ -137,39 +169,58 @@ function OnCloseModal() {
     $('#modalExpTemp').modal("hide");
 }
 
-function saveData() {
-    //if ($('#cvID').val() == "" || parseInt($('#cvID').val()) == 0) {
-    //    var dataHeader = {
-    //        name: $('#employeeName').val(),
-    //        birth_date: $('#birthDate').val(),
-    //        address: $('#address').val(),
-    //        sallary: parseFloat($('#sallary').val()),
-    //        nik: $('#employeeNIK').val(),
-    //    };
-    //    $.ajax({
-    //        type: "POST",
-    //        url: "/Employee/SubmitEmployee",
-    //        data: dataHeader,
-    //        success: function (respon) {
-    //            if (respon.is_ok) {
+function OnSaveCV() {
+    if ($('#cvID').val() == '') {
+        var dataCV = {
+            isCreated: true,
+            employee_no: 0,
+            employee_name: $('#fullName').val(),
+            phone: $('#phoneNumber').val(),
+            email: $('#email').val(),
+            birth_date: $('#birthDate').val(),
+            address: $('#address').val(),
+            ktp: $('#ktp').val(),
+            image: "",
+            soft_skill: $('#softSkill').val(),
+            hard_skill: $('#hardSkill').val(),
+            gender: $('#gender').val(),
+            marital_status: $('#maritalID').val(),
+            expectation_sallary: $('#expSallary').val(),
+            education_type: $('#eduType').val(),
+            education_name: $('#eduName').val(),
+            ipk: $('#eduIPK').val(),
+            year_education: $('#eduYear').val(),
+            total_exp: $('#expSallary').val(),
+            npwp: $('#npwp').val(),
+            position: $('#position').val(),
+            focus_education: $('#eduType').val(),
+            is_negotiable: $('#isNego').val(),
+            is_deleted: false,
+            Experience_List: tempExpNew
+        };
 
-    //                toastr.success("Employee success to submitted");
-    //                setTimeout(() => {
-    //                    $('#formCrud').css('display', 'none');
-    //                    $('#formList').css('display', 'block');
-    //                    searchDataListEmployee();
-    //                }, 500);
-    //            }
-    //            else {
-    //                console.log("Invoice failed to submitted");
-    //                toastr.error(respon.messageUI);
+        $.ajax({
+            type: "POST",
+            url: "/CV/SubmitNewCV",
+            data: dataCV,
+            success: function (respon) {
+                if (respon.is_ok) {
 
-    //            }
-    //        }
+                    toastr.success("CV success to submitted");
+                    setTimeout(() => {
+                        $('#listCV').css('display', 'block');
+                        $('#formCV').css('display', 'none');
+                       // searchDataListEmployee();
+                    }, 500);
+                }
+                else {
+                    console.log("Invoice failed to submitted");
+                    toastr.error(respon.messageUI);
 
-    //    });
-    //}
-    //else {
-    //    updateData();
-    //}
+                }
+            }
+        });
+
+    }
+   
 }

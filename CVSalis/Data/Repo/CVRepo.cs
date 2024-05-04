@@ -40,10 +40,10 @@ namespace CVSalis.Data.Repo
 
                 query = "INSERT INTO ms_employee" +
                             "(employee_name,phone,email,birth_date,address,ktp,image,soft_skill,hard_skill,gender,marital_status,expectation_sallary,education_type,education_name," +
-                            "ipk,year_education,total_exp,npwp,position,focus_education,is_negotiable,created_by,created_at,updated_by,updated_at)" +
+                            "ipk,year_education,total_exp,npwp,position,focus_education,is_negotiable,is_deleted,created_by,created_at,updated_by,updated_at)" +
                             "VALUES" +
                             "(@employee_name,@phone,@email,@birth_date,@address,@ktp,@image,@soft_skill,@hard_skill,@gender,@marital_status,@expectation_sallary,@education_type,@education_name," +
-                            "@ipk,@year_education,@total_exp,@npwp,@position,@focus_education,@is_negotiable,@created_by,@created_at,@updated_by,@updated_at)";
+                            "@ipk,@year_education,@total_exp,@npwp,@position,@focus_education,@is_negotiable,@is_deleted,@created_by,@created_at,@updated_by,@updated_at)";
 
                 if (!request.isCreated)
                 {
@@ -97,6 +97,7 @@ namespace CVSalis.Data.Repo
                 {"position", request.position },
                 {"focus_education",request.focus_education },
                 {"is_negotiable",request.is_negotiable },
+                {"is_deleted",request.is_deleted },
                 {"created_by","systemUI" },
                 {"created_at",DateTime.UtcNow },
                 {"updated_by",!request.isCreated ? "systemUI" : "" },

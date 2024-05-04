@@ -19,7 +19,7 @@
                     </h5>
                     <div class="card-body">
                         <div class="mt-2">
-                            <button id="btnAdd" type="submit" class="btn btn-primary me-2" onclick="onAddNewCV()">Add New</button>
+                            <button id="btnAdd" type="submit" class="btn btn-primary me-2" onclick="OnAddNewCV()">Add New</button>
 
                         </div>
                         <br /><br />
@@ -50,6 +50,7 @@
                                             Total Experience
                                         </th>
                                     </tr>
+                                    display
                                 </thead>
                             </table>
 
@@ -66,7 +67,7 @@
                         <button id="navProfile" class="nav-link active" onclick="openProfile()"><i class="bx bx-user me-1"></i> Profile Details</button>
                     </li>
                     <li class="nav-item">
-                        <button id="navExp" class="nav-link "  onclick="openExp()"><i class="bx bx-briefcase-alt-2"></i> Experience</button>
+                        <button id="navExp" class="nav-link " onclick="openExp()"><i class="bx bx-briefcase-alt-2"></i> Experience</button>
                     </li>
 
                 </ul>
@@ -111,6 +112,7 @@
                                 <div class="mb-3 col-md-6">
                                     <label for="firstName" class="form-label">Full Name</label>
                                     <input class="form-control" type="text" id="fullName" name="fullName" autofocus />
+                                    <input type="text" class="form-control" id="cvID" disabled style="display:none;" />
                                 </div>
                                 <div class="mb-3 col-md-6">
                                     <label class="form-label" for="phoneNumber">Phone Number</label>
@@ -229,14 +231,14 @@
                                 </div>
                             </div>
                             <div class="mt-2">
-                                <button type="submit" class="btn btn-primary me-2">Save changes</button>
+                                <button type="submit" class="btn btn-primary me-2 ">Save changes</button>
                                 <button type="reset" class="btn btn-outline-danger" onclick="OnCloseCV()">Cancel</button>
                             </div>
                         </form>
                     </div>
-                    <!-- /Account -->
+
                 </div>
-                
+
                 <div class="card mb-4" id="expform" style="display:none;">
                     <h5 class="card-header">
                         <span class="text-muted fw-light">CV /</span>
@@ -292,45 +294,64 @@
                                 </div>
                             </div>
                             <div class="mt-2">
-                                <button type="submit" class="btn btn-primary me-2">Save changes</button>
+                                <button type="submit" class="btn btn-primary me-2" onclick="onAddNewExp()">Save changes</button>
                                 <button type="reset" class="btn btn-outline-secondary">Cancel</button>
                             </div>
                         </form>
                     </div>
                     <div class="card-body">
-                        <div class="mt-2">
-                            <button id="btnAdd"  type="submit" class="btn btn-primary me-2" onclick="onAddNew()">Add New</button>
-                            
-                        </div>
-                        <br /><br />
+                    </div>
+                    <!-- /Account -->
+                </div>
+
+                <div class="card mb-4" id="listExp">
+                    <h5 class="card-header">
+                        <span class="text-muted fw-light">CV /</span>
+                        <label for="cvID">List Experience</label>
+                    </h5>
+                    <hr class="my-0" />
+                    
+                    <div class="card-body">
                         <div class="table-responsive ">
-                            <table class="table table-bordered " id="listData" width="100%" cellspacing="0">
+                            <div class="mt-2">
+                                <button id="btnAdd" type="submit" class="btn btn-primary me-2" onclick="addExperience()">Add New</button>
+                            </div>
+                            <br /><br />
+                            <table class="table table-bordered " id="listDataExp" width="100%" cellspacing="0">
                                 <caption>Data Experience</caption>
                                 <thead>
                                     <tr>
-                                        <th class="headerBg" style="width:3%">
+                                        <th style="display:none;"></th>
+                                        <th class="table-primary" style="width:5%;text-align: center;vertical-align:middle;">
                                             Action
                                         </th>
-                                        <th class="headerBg" style="width:5%">
-                                           Company Name
+                                        <th class="table-primary" style="width:20%;text-align: center;vertical-align:middle;">
+                                            Company Name
                                         </th>
-                                        <th class="headerBg" style="width:7%">
+                                        <th class="table-primary" style="width:7%;text-align: center;vertical-align:middle;">
                                             Role
                                         </th>
-                                        <th class="headerBg" style="width:5%">
+                                        <th class="table-primary" style="text-align: center;vertical-align:middle;">
+                                            Company Address
+                                        </th>
+                                        <th class="table-primary" style="width:5%;text-align: center;vertical-align:middle;">
                                             Start Year
                                         </th>
-                                        <th class="headerBg" style="width:5%">
+                                        <th class="table-primary" style="width:5%;text-align: center;vertical-align:middle;">
                                             End Year
+                                        </th>
+                                        <th class="table-primary" style="text-align: center;vertical-align:middle;">
+                                            Tech Tools
+                                        </th>
+                                        <th class="table-primary" style="text-align: center;vertical-align:middle;">
+                                            Responsibilty
                                         </th>
                                     </tr>
                                 </thead>
                             </table>
-
                         </div>
-
                     </div>
-                    <!-- /Account -->
+                    
                 </div>
             </div>
         </div>

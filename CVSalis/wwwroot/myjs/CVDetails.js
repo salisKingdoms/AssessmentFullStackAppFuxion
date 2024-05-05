@@ -400,6 +400,12 @@ function OnLoadListCV() {
                     $('#mySpinner').css('display', 'none');
                 }
             }
+            else {
+                $('#listCV').css('display', 'block');
+                $('#formCV').css('display', 'none');
+                console.log("employee not found");
+                $('#mySpinner').css('display', 'none');
+            }
         }
     });
 }

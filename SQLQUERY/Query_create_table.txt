@@ -1,0 +1,68 @@
+-- Table: public.experience_employee
+
+-- DROP TABLE IF EXISTS public.experience_employee;
+
+CREATE TABLE IF NOT EXISTS public.experience_employee
+(
+    id bigint NOT NULL GENERATED ALWAYS AS IDENTITY ( INCREMENT 1 START 1 MINVALUE 1 MAXVALUE 9223372036854775807 CACHE 1 ),
+    company character varying COLLATE pg_catalog."default" NOT NULL,
+    role character varying COLLATE pg_catalog."default",
+    periode_start numeric(4,0) NOT NULL,
+    resposibility_desc character varying COLLATE pg_catalog."default",
+    company_address character varying COLLATE pg_catalog."default",
+    tech_tools character varying COLLATE pg_catalog."default",
+    created_by character varying COLLATE pg_catalog."default",
+    created_at timestamp without time zone,
+    updated_by character varying COLLATE pg_catalog."default",
+    updated_at timestamp without time zone,
+    periode_end numeric(4,0) NOT NULL,
+    employee_id bigint NOT NULL,
+    CONSTRAINT experience_employee_pkey PRIMARY KEY (id)
+)
+
+TABLESPACE pg_default;
+
+ALTER TABLE IF EXISTS public.experience_employee
+    OWNER to postgres;
+	
+===CREATE MS_EMPLOYEE FOR HEADER CV
+-- Table: public.ms_employee
+
+-- DROP TABLE IF EXISTS public.ms_employee;
+
+CREATE TABLE IF NOT EXISTS public.ms_employee
+(
+    employee_no bigint NOT NULL GENERATED ALWAYS AS IDENTITY ( INCREMENT 1 START 1 MINVALUE 1 MAXVALUE 9223372036854775807 CACHE 1 ),
+    employee_name character varying COLLATE pg_catalog."default" NOT NULL,
+    email character varying COLLATE pg_catalog."default",
+    birth_date timestamp without time zone,
+    address character varying COLLATE pg_catalog."default",
+    ktp character varying COLLATE pg_catalog."default",
+    image character varying COLLATE pg_catalog."default",
+    soft_skill character varying COLLATE pg_catalog."default",
+    hard_skill character varying COLLATE pg_catalog."default",
+    created_by character varying COLLATE pg_catalog."default",
+    created_at timestamp without time zone,
+    updated_by character varying COLLATE pg_catalog."default",
+    updated_at timestamp without time zone,
+    expectation_sallary numeric(18,0) NOT NULL,
+    gender integer NOT NULL,
+    marital_status integer NOT NULL,
+    education_type character varying COLLATE pg_catalog."default" NOT NULL,
+    education_name character varying COLLATE pg_catalog."default" NOT NULL,
+    ipk numeric(3,0) NOT NULL,
+    year_education numeric(4,0) NOT NULL,
+    total_exp integer NOT NULL,
+    npwp character varying COLLATE pg_catalog."default" NOT NULL,
+    "position" character varying COLLATE pg_catalog."default" NOT NULL,
+    focus_education character varying COLLATE pg_catalog."default" NOT NULL,
+    is_negotiable boolean NOT NULL,
+    is_deleted boolean NOT NULL,
+    phone character varying(15) COLLATE pg_catalog."default",
+    CONSTRAINT ms_employee_pkey PRIMARY KEY (employee_no)
+)
+
+TABLESPACE pg_default;
+
+ALTER TABLE IF EXISTS public.ms_employee
+    OWNER to postgres;

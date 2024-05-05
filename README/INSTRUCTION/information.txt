@@ -1,0 +1,9 @@
+===== Web specification =======
+1. Framework with NET 6 MVC
+2. POTGRESQL for database
+3. UI Theme using bootstrap sneat-1.0.0
+
+===== How to using/testing =====
+1.Create database and table with query in folder SQLQUERY on your local
+2.Change the DefaultConnection in appsettings.json (makesure your changes same with your account database in local)
+3. rebuild the application and run

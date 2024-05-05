@@ -37,36 +37,7 @@ function OnAddNewCV() {
     $('#listCV').css('display', 'none');
     $('#formCV').css('display', 'block');
     $('#listExp').css('display', 'none');
-
-    //test disini dulu getnya
-    //var dataHeader = {
-    //    id: 2 //parseInt($('#employeeID').val())
-    //};
-    //$.ajax({
-    //    type: "GET",
-    //    url: "/CV/GetDetailCVById",
-    //    data: dataHeader,
-    //    success: function (respon) {
-    //        var dataresp = JSON.parse(respon);
-    //        if (dataresp.is_ok) {
-    //            $('#uploadedAvatar').attr('src', dataresp.dataDetail.image);
-    //            //$('#employeeID').val(dataresp.ID);
-    //            //$('#employeeName').val(dataresp.name);
-    //            //$('#birthDate').val(moment(dataresp.birth_date).format('YYYY-MM-DD'));
-    //            //$('#employeeNIK').val(dataresp.nik);
-    //            //$('#sallary').val(dataresp.sallary);
-    //            //$('#address').val(dataresp.address);
-    //            //$('#employeeNIK').prop('disabled', true);;
-    //            //$('#loadingPanel').css('display', 'none');
-    //        }
-    //        else {
-    //            console.log("employee not found");
-    //            toastr.error(dataresp.messageUI);
-    //            $('#loadingPanel').css('display', 'none');
-    //        }
-    //    }
-
-    //});
+   
 }
 
 function OnCloseCV() {
@@ -107,6 +78,7 @@ function OnChangeNegotiable() {
         $('#lbNego').text('True');
     }
     else {
+        
         isNego = false;
         $('#lbNego').text('False');
         $('#isNego').val("0");
@@ -331,6 +303,7 @@ function OnLoadListCV() {
                     $.each(dataresp.listCV, function (i, data) {//Name,pos,gender,phone,email,total
                         var genders = (data.gender == 2 ? "Female" : "Male");
                         var htmlRow = $("<tr>" + '<td style="display:none; text-align:center;">' + data.employee_no + "</td>" +
+                            '<td  style="text-align: center;">' + '<button id=' + data.employee_no + ' class="btn btn-primary me-2"  type="submit"  onclick=OnPDFCV(this);  >PDF</a>' + "</td>" +
                             '<td  style="text-align: center;">' + '<button id=' + data.employee_no + ' class="btn btn-primary me-2"  type="submit"  onclick=OnEditCV(this); >Edit</button>' + "</td>" +
                             '<td  style="text-align: center;">' + '<button id=' + data.employee_no + ' class="btn btn-danger me-2"  type="submit"  onclick=OnDeletedCV(this); >Delete</button>' + "</td>" +
                             '<td style="text-align:center;">' + data.employee_name + "</td>" +
@@ -361,9 +334,92 @@ function OnLoadListCV() {
 }
 
 function OnEditCV(obj) {
+    var cvIdChoosen = parseInt($(obj).attr('id'));
+     var dataHeader = {
+         id: cvIdChoosen 
+    };
+    $('#mySpinner').css('display', 'block');
+    $.ajax({
+        type: "GET",
+        url: "/CV/GetDetailCVById",
+        data: dataHeader,
+        success: function (respon) {
+            var dataresp = JSON.parse(respon);
+            if (dataresp.is_ok) {
+                $('#uploadedAvatar').attr('src', dataresp.dataDetail.image);
+                $('#cvID').val(dataresp.dataDetail.employee_no);
+                $('#fullName').val(dataresp.dataDetail.employee_name);
+                $('#phoneNumber').val(dataresp.dataDetail.phone);
+                $('#email').val(dataresp.dataDetail.email);
+                //$('#birthDate').val(dataresp.dataDetail.birth_date);
+                $('#address').val(dataresp.dataDetail.address);
+                $('#ktp').val(dataresp.dataDetail.ktp);
+                $('#softSkill').val(dataresp.dataDetail.soft_skill);
+                $('#hardSkill').val(dataresp.dataDetail.hard_skill);
+                $('#gender').val(dataresp.dataDetail.gender);
+                $('#maritalID').val(dataresp.dataDetail.marital_status);
+                $('#expSallary').val(dataresp.dataDetail.expectation_sallary);
+                $('#eduType').val(dataresp.dataDetail.education_type);
+                $('#eduName').val(dataresp.dataDetail.education_name);
+                $('#eduIPK').val(dataresp.dataDetail.ipk);
+                $('#eduYear').val(dataresp.dataDetail.year_education);
+                $('#npwp').val(dataresp.dataDetail.npwp);
+                $('#position').val(dataresp.dataDetail.position);
+                $('#countExp').val(dataresp.dataDetail.total_exp);
+                $('#isNego').val(dataresp.dataDetail.is_negotiable);
+                isNego = dataresp.dataDetail.is_negotiable;
+                if (isNego == true) {
+                    $('#lbNego').text('True');
+                } else {
+                    $('#lbNego').text('False');
+                }
+                
+                $('#listCV').css('display', 'none');
+                $('#formCV').css('display', 'block');
+                $('#listExp').css('display', 'none');
+                //hide spinner 3 seconds
+                setTimeout(function () {
+                    $('#mySpinner').css('display', 'none');
+                }, 3000);
+            }
+            else {
+                console.log("employee not found");
+                //hide spinner 3 seconds
+                setTimeout(function () {
+                    $('#mySpinner').css('display', 'none');
+                }, 3000);
+            }
+        }
 
+    });
 }
 
 function OnDeletedCV(obj) {
 
+}
+
+function OnPDFCV(obj) {
+    var cvIdChoosen = parseInt($(obj).attr('id'));
+    $('#mySpinner').css('display', 'block');
+    var paramData = {
+        cvID: cvIdChoosen
+    };
+    $.ajax({
+        type: "POST",
+        url: "/CV/GeneratePDF",
+        data: paramData,
+        success: function (response) {
+            if (!response.is_ok) {
+                toastr.error(response.message);
+                $('#mySpinner').css('display', 'none');
+            }
+            else {
+    
+                var str = response.data.filePath;
+                window.open(str, '_blank');
+                
+                $('#mySpinner').css('display', 'none');
+            }
+        }
+    });
 }

@@ -26,6 +26,7 @@
         public string focus_education { get; set; }
         public bool is_negotiable { get; set; }
         public bool is_deleted { get; set; }
+        public int ages { get; set; }
         public List<GetDataExperience> Experience_List { get; set; }
     }
 

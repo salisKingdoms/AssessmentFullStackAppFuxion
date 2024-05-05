@@ -187,18 +187,18 @@ namespace CVSalis.Data.Repo
                 {
                     foreach (var exp in dataDB)
                     {
-                        //detailExp.Add(new GetDataExperience
-                        //{
-                        //    id = exp.id.Value,
-                        //    employee_id = exp.employee_id.Value,
-                        //    company = exp.company,
-                        //    role = exp.role,
-                        //    periode_start = exp.periode_start.Value,
-                        //    periode_end = exp.periode_end.Value,
-                        //    resposibility_desc = exp.resposibility_desc,
-                        //    company_address = exp.company_address,
-                        //    tech_tools = exp.tech_tools
-                        //});
+                        detailExp.Add(new GetDataExperience
+                        {
+                            id = exp.id.Value,
+                            employee_id = exp.employee_id.Value,
+                            company = exp.company,
+                            role = exp.role,
+                            periode_start = exp.periode_start.Value,
+                            periode_end = exp.periode_end.Value,
+                            resposibility_desc = exp.resposibility_desc,
+                            company_address = exp.company_address,
+                            tech_tools = exp.tech_tools
+                        });
 
                         dataCV.employee_no = exp.employee_no;
                         dataCV.employee_name = exp.employee_name;

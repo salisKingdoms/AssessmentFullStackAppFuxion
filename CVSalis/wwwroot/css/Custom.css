@@ -3,3 +3,19 @@
     background-color: #696cff;
     text-align: center;
 }
+.body-img {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+}
+
+.image-container {
+    width: 200px; /* Atur lebar dan tinggi sesuai kebutuhan */
+    height: 200px;
+    overflow: hidden; /* Memastikan gambar tidak keluar dari batas container */
+    border-radius: 50%; /* Membuat border radius menjadi 50% untuk membuat lingkaran */
+}
+
+

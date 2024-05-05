@@ -22,6 +22,11 @@ namespace CVSalis.Controllers
             return View();
         }
 
+        public IActionResult SamplePrint()
+        {
+            return View();
+        }
+
         [HttpPost]
         public JsonResult SubmitNewCV(DetailCV param)
         {

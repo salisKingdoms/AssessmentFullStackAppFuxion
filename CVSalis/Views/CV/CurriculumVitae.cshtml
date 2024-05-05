@@ -187,7 +187,7 @@
                                 </div>
                                 <div class="mb-2 col-md-2">
                                     <label class="form-label" for="eduType">Focus Studied</label>
-                                    <select id="eduType" class="select2 form-select">
+                                    <select id="eduFocused" class="select2 form-select">
                                         <option value="">Select</option>
                                         <option value="ComputerEngineering">Computer Engineering</option>
                                         <option value="InformationSystem">Information System</option>
@@ -317,7 +317,7 @@
                     <div class="card-body">
                         <div class="table-responsive ">
                             <div class="mt-2">
-                                <button id="btnAdd" type="submit" class="btn btn-primary me-2" onclick="addExperience()">Add New</button>
+                                <button id="btnAddExp" type="submit" class="btn btn-primary me-2" onclick="addExperience()">Add New</button>
                             </div>
                             <br /><br />
                             <table class="table table-bordered " id="listDataExp" width="100%" cellspacing="0">
@@ -388,6 +388,27 @@
                     </div>
                     <div class="modal-footer">
                         <button type="reset" class="btn btn-outline-secondary" onclick="OnCloseAlert()">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="modalExpCVList" aria-labelledby="modalToggleLabel1" tabindex="-1" style="display: none" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="modalToggleLabel1">Delete Confirmation</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        Are you sure, you want to delete this CV?
+                        <p>Kalau gak yakin juga tidak apa, kita tidak maksa kok, kamu cancel aja yah...</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-danger me-2" data-bs-target="#modalToggle2" data-bs-toggle="modal" data-bs-dismiss="modal" onclick="OnDeleteCVOK()">
+                            Yes
+                        </button>
+                        <button type="reset" class="btn btn-outline-secondary" onclick="OnCloseModalCV()">Cancel</button>
                     </div>
                 </div>
             </div>

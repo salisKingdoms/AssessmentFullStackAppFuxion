@@ -1,6 +1,7 @@
 ﻿var table = null;
 var dtCV = null;
 var tempExpNew = [];
+var tempExpEdit= [];
 var rowTempExpDelete = 0;
 var isNego = false;
 var pathImage = "";
@@ -23,6 +24,14 @@ function openExp() {
     $('#navExp').addClass('active');
     $('#cvform').css('display', 'none');
     $('#listExp').css('display', 'block');
+
+    if ($('#cvID').val() == '') {
+        $('#btnAddExp').css('display', 'block');
+        table.clear();
+        $("#listDataExp").find("tr:not(:first)").remove();
+        $('#listDataExp').DataTable().destroy();
+
+    }
 }
 
 function openProfile() {
@@ -37,6 +46,7 @@ function OnAddNewCV() {
     $('#listCV').css('display', 'none');
     $('#formCV').css('display', 'block');
     $('#listExp').css('display', 'none');
+    //
    
 }
 
@@ -146,39 +156,42 @@ function OnDeleteOK() {
     
     $('#modalExpTemp').modal("hide");
     $('#mySpinner').css('display', 'block');
+    //delete experience ketika data cv nya baru di buat
+    if ($('#cvID').val() == '') {
+        tempExpNew = tempExpNew.splice(rowTempExpDelete, 1);
+        console.log("ini data temp:" + tempExpNew);
+        $.each(tempExpNew, function (i, item) {
+            item.indexRow -= 1;
+        });
 
-    tempExpNew = tempExpNew.splice(rowTempExpDelete, 1);
-    console.log("ini data temp:" + tempExpNew);
-    $.each(tempExpNew, function (i, item) {
-        item.indexRow -= 1;
-    });
+        rowTempExpDelete = 0;
+        table.clear();
+        $("#listDataExp").find("tr:not(:first)").remove();
+        $('#listDataExp').DataTable().destroy();
 
-    rowTempExpDelete = 0;
-    table.clear();
-    $("#listDataExp").find("tr:not(:first)").remove();
-    $('#listDataExp').DataTable().destroy();
+        $.each(tempExpNew, function (i, data) {
+            var htmlRow = $("<tr>" + '<td style="display:none; text-align:center;">' + 0 + "</td>" +
+                '<td style="text-align: center;">' + '<button class="btn btn-danger me-2"  type="submit"  onclick=OnDeletedExpNew(' + data.indexRow + '); >Delete</button>' + "</td>" +
+                '<td style="text-align:center;">' + data.companyName + "</td>" +
+                '<td style="text-align:center;">' + data.role + "</td>" +
+                '<td style="text-align:center;">' + data.compAddress + "</td>" +
+                '<td style="text-align:center;">' + data.startYear + "</td>" +
+                '<td style="text-align:center;">' + data.endYear + "</td>" +
+                '<td style="text-align:center;">' + data.tools + "</td>" +
+                '<td style="text-align:center;">' + data.responsibility + "</td></tr>");
 
-    $.each(tempExpNew, function (i, data) {
-        var htmlRow = $("<tr>" + '<td style="display:none; text-align:center;">' + 0 + "</td>" +
-            '<td style="text-align: center;">' + '<button class="btn btn-danger me-2"  type="submit"  onclick=OnDeletedExpNew(' + data.indexRow + '); >Delete</button>' + "</td>" +
-            '<td style="text-align:center;">' + data.companyName + "</td>" +
-            '<td style="text-align:center;">' + data.role + "</td>" +
-            '<td style="text-align:center;">' + data.compAddress + "</td>" +
-            '<td style="text-align:center;">' + data.startYear + "</td>" +
-            '<td style="text-align:center;">' + data.endYear + "</td>" +
-            '<td style="text-align:center;">' + data.tools + "</td>" +
-            '<td style="text-align:center;">' + data.responsibility + "</td></tr>");
+            table.row.add($(htmlRow));
 
-        table.row.add($(htmlRow));
+        });
 
-    });
-
-    //redraw datatable with new array after splice/deleted
-    table.draw();
-    //hide spinner 3 seconds
-    setTimeout(function () {
-        $('#mySpinner').css('display', 'none');
-    }, 3000);
+        //redraw datatable with new array after splice/deleted
+        table.draw();
+        //hide spinner 3 seconds
+        setTimeout(function () {
+            $('#mySpinner').css('display', 'none');
+        }, 3000);
+    }
+    
 }
 
 function OnCloseModal() {
@@ -240,7 +253,7 @@ function OnSaveCV() {
             birth_date: $('#birthDate').val(),
             address: $('#address').val(),
             ktp: $('#ktp').val(),
-            image: "/image/" + pathImage, 
+            image: "/Image/" + pathImage,
             soft_skill: $('#softSkill').val(),
             hard_skill: $('#hardSkill').val(),
             gender: $('#gender').val(),
@@ -253,7 +266,7 @@ function OnSaveCV() {
             total_exp: $('#expSallary').val(),
             npwp: $('#npwp').val(),
             position: $('#position').val(),
-            focus_education: $('#eduType').val(),
+            focus_education: $('#eduFocused').val(),
             is_negotiable: isNego,
             is_deleted: false,
             Experience_List: mappingDetail
@@ -269,7 +282,7 @@ function OnSaveCV() {
                     toastr.success("CV success to submitted");
                     setTimeout(() => {
                         $('#mySpinner').css('display', 'none');
-                        
+
                         OnLoadListCV();
                     }, 500);
                 }
@@ -282,7 +295,65 @@ function OnSaveCV() {
         });
 
     }
+    else {
+        OnUpdateCV();
+    }
+}
+
+function OnUpdateCV() {
+    $('#mySpinner').css('display', 'block');
+    var mappingDetail = [];
    
+
+    var dataCV = {
+        isCreated: false,
+        employee_no: $('#cvID').val(),
+        employee_name: $('#fullName').val(),
+        phone: $('#phoneNumber').val(),
+        email: $('#email').val(),
+        birth_date: $('#birthDate').val(),
+        address: $('#address').val(),
+        ktp: $('#ktp').val(),
+        image: pathImage,
+        soft_skill: $('#softSkill').val(),
+        hard_skill: $('#hardSkill').val(),
+        gender: $('#gender').val(),
+        marital_status: $('#maritalID').val(),
+        expectation_sallary: $('#expSallary').val(),
+        education_type: $('#eduType').val(),
+        education_name: $('#eduName').val(),
+        ipk: $('#eduIPK').val(),
+        year_education: $('#eduYear').val(),
+        total_exp: $('#expSallary').val(),
+        npwp: $('#npwp').val(),
+        position: $('#position').val(),
+        focus_education: $('#eduFocused').val(),
+        is_negotiable: isNego,
+        is_deleted: false,
+        Experience_List: null
+    };
+
+    $.ajax({
+        type: "PUT",
+        url: "/CV/EditCV",
+        data: dataCV,
+        success: function (respon) {
+            if (respon.is_ok) {
+
+                toastr.success("CV success to submitted");
+                setTimeout(() => {
+                    $('#mySpinner').css('display', 'none');
+
+                    OnLoadListCV();
+                }, 500);
+            }
+            else {
+                console.log("Invoice failed to submitted");
+                toastr.error(respon.messageUI);
+                $('#mySpinner').css('display', 'none');
+            }
+        }
+    });
 }
 
 function OnLoadListCV() {
@@ -299,7 +370,9 @@ function OnLoadListCV() {
             var dataresp = JSON.parse(respon);
             if (dataresp.is_ok) {
                 if (dataresp.listCV.length > 0) {
-
+                    dtCV.clear();
+                    $("#listData").find("tr:not(:first)").remove();
+                    $('#listData').DataTable().destroy();
                     $.each(dataresp.listCV, function (i, data) {//Name,pos,gender,phone,email,total
                         var genders = (data.gender == 2 ? "Female" : "Male");
                         var htmlRow = $("<tr>" + '<td style="display:none; text-align:center;">' + data.employee_no + "</td>" +
@@ -314,9 +387,7 @@ function OnLoadListCV() {
                             '<td style="text-align:center;">' + data.total_exp + "</td></tr>");
                         dtCV.row.add($(htmlRow)).draw();
                     });
-                    //var row = dtCV.row(0).node();
-                    //$(row).find('td').eq(0).attr('colspan', 2);
-                   // $('#listData thead th:eq(0)').next().remove();
+                   
                     $('#listCV').css('display', 'block');
                     $('#formCV').css('display', 'none');
                     $('#mySpinner').css('display', 'none');
@@ -347,11 +418,12 @@ function OnEditCV(obj) {
             var dataresp = JSON.parse(respon);
             if (dataresp.is_ok) {
                 $('#uploadedAvatar').attr('src', dataresp.dataDetail.image);
+                pathImage = dataresp.dataDetail.image;
                 $('#cvID').val(dataresp.dataDetail.employee_no);
                 $('#fullName').val(dataresp.dataDetail.employee_name);
                 $('#phoneNumber').val(dataresp.dataDetail.phone);
-                $('#email').val(dataresp.dataDetail.email);
-                //$('#birthDate').val(dataresp.dataDetail.birth_date);
+                $('#email').val(dataresp.dataDetail.email);//$('#birthDate').val(moment(dataresp.birth_date).format('YYYY-MM-DD'));
+                $('#birthDate').val(moment(dataresp.dataDetail.birth_date).format('YYYY-MM-DD'));
                 $('#address').val(dataresp.dataDetail.address);
                 $('#ktp').val(dataresp.dataDetail.ktp);
                 $('#softSkill').val(dataresp.dataDetail.soft_skill);
@@ -367,6 +439,8 @@ function OnEditCV(obj) {
                 $('#position').val(dataresp.dataDetail.position);
                 $('#countExp').val(dataresp.dataDetail.total_exp);
                 $('#isNego').val(dataresp.dataDetail.is_negotiable);
+                $('#eduFocused').val(dataresp.dataDetail.focus_education);
+                $('#btnAddExp').css('display', 'none');
                 isNego = dataresp.dataDetail.is_negotiable;
                 if (isNego == true) {
                     $('#lbNego').text('True');
@@ -377,6 +451,46 @@ function OnEditCV(obj) {
                 $('#listCV').css('display', 'none');
                 $('#formCV').css('display', 'block');
                 $('#listExp').css('display', 'none');
+
+                
+                if (dataresp.dataDetail.Experience_List.length > 0) {
+                    table.clear();
+                    $("#listDataExp").find("tr:not(:first)").remove();
+                    $('#listDataExp').DataTable().destroy();
+                    var indexs = 0;
+                    $.each(dataresp.dataDetail.Experience_List, function (i, data) {
+
+                        var dataExp = {
+                            indexRow: indexs + 1,
+                            empID: data.employee_id,
+                            startYear: data.periode_start,
+                            endYear: data.periode_end,
+                            role: data.role,
+                            companyName: data.company,
+                            compAddress: data.company_address,
+                            tools: data.tech_tools,
+                            responsibility: data.resposibility_desc
+                        };
+
+                        console.log(dataExp);
+                        tempExpEdit.push(dataExp);
+                        var htmlRow = $("<tr>" + '<td style="display:none; text-align:center;">' + dataExp.empID + "</td>" +
+                            '<td style="text-align: center;display:none;">' + '<button class="btn btn-danger me-2"  type="submit"  onclick=OnDeletedExpNew(' + dataExp.indexRow + '); >Delete</button>' + "</td>" +
+                            '<td style="text-align:center;">' + dataExp.companyName + "</td>" +
+                            '<td style="text-align:center;">' + dataExp.role + "</td>" +
+                            '<td style="text-align:center;">' + dataExp.compAddress + "</td>" +
+                            '<td style="text-align:center;">' + dataExp.startYear + "</td>" +
+                            '<td style="text-align:center;">' + dataExp.endYear + "</td>" +
+                            '<td style="text-align:center;">' + dataExp.tools + "</td>" +
+                            '<td style="text-align:center;">' + dataExp.responsibility + "</td></tr>");
+
+                        table.row.add($(htmlRow));
+                    });
+                    table.draw();
+                    table.column(1).visible(false);
+                }
+               
+               
                 //hide spinner 3 seconds
                 setTimeout(function () {
                     $('#mySpinner').css('display', 'none');
@@ -395,7 +509,46 @@ function OnEditCV(obj) {
 }
 
 function OnDeletedCV(obj) {
+    var cvIdChoosen = parseInt($(obj).attr('id'));
+    rowTempExpDelete = cvIdChoosen;
+    $('#modalExpCVList').css('display', 'block');
+    $('#modalExpCVList').modal("show");
+}
 
+function OnDeleteCVOK() {
+    $('#mySpinner').css('display', 'block');
+   
+    var dataCV = {
+        id: rowTempExpDelete
+    };
+
+    $.ajax({
+        type: "DELETE",
+        url: "/CV/DeleteCV",
+        data: dataCV,
+        success: function (respon) {
+            var dataresp = JSON.parse(respon);
+            if (dataresp.is_ok) {
+                $('#modalExpCVList').css('display', 'none');
+                $('#modalExpCVList').modal("hide");
+                
+                setTimeout(() => {
+                    $('#mySpinner').css('display', 'none');
+                    OnLoadListCV();
+                    rowTempExpDelete = 0;
+                }, 3000);
+            }
+            else {
+                console.log("Invoice failed to submitted");
+                $('#mySpinner').css('display', 'none');
+            }
+        }
+    });
+}
+
+function OnCloseModalCV() {
+    $('#modalExpCVList').css('display', 'none');
+    $('#modalExpCVList').modal("hide");
 }
 
 function OnPDFCV(obj) {

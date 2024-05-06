@@ -27,10 +27,7 @@ function openExp() {
 
     if ($('#cvID').val() == '') {
         $('#btnAddExp').css('display', 'block');
-        table.clear();
-        $("#listDataExp").find("tr:not(:first)").remove();
-        $('#listDataExp').DataTable().destroy();
-
+      
     }
 }
 
@@ -46,14 +43,13 @@ function OnAddNewCV() {
     $('#listCV').css('display', 'none');
     $('#formCV').css('display', 'block');
     $('#listExp').css('display', 'none');
-    //
-   
+
 }
 
 function OnCloseCV() {
     $('#listCV').css('display', 'block');
     $('#formCV').css('display', 'none');
-
+    OnClearForm();
 }
 
 function addExperience() {
@@ -79,6 +75,53 @@ function startKeyUp() {
 function endKeyUp() {
     if ($('#end').val().length > 4)
         $('#end').val(($('#end').val()).slice(0, 4));
+}
+
+function eduYearKeyUp() {
+    if ($('#eduYear').val().length > 4)
+        $('#eduYear').val(($('#eduYear').val()).slice(0, 4));
+}
+
+function OnClearForm() {
+    //header
+    $('#uploadedAvatar').attr('src', '/theme/assets/img/avatars/1.png');
+    $('#cvID').val('');
+    $('#fullName').val('');
+    $('#phoneNumber').val('');
+    $('#email').val('');
+    $('#birthDate').val('');
+    $('#address').val('');
+    $('#ktp').val('');
+    $('#softSkill').val('');
+    $('#hardSkill').val('');
+    $('#gender').val('');
+    $('#maritalID').val('');
+    $('#expSallary').val('');
+    $('#eduType').val('');
+    $('#eduName').val('');
+    $('#eduIPK').val('');
+    $('#eduYear').val('');
+    $('#expSallary').val('');
+    $('#npwp').val('');
+    $('#position').val('');
+    $('#eduFocused').val('');
+    $('#countExp').val('');
+    $('#lbNego').text('False');
+    $('#isNego').val("0");
+
+    // experience form
+    $('#start').val('');
+    $('#end').val('');
+    $('#companyName').val('');
+    $('#role').val('');
+    $('#tools').val('');
+    $('#respDesc').val('');
+    $('#addressComp').val('');
+    table.clear();
+    $("#listDataExp").find("tr:not(:first)").remove();
+    $('#listDataExp').DataTable().destroy();
+
+    tempExpNew = [];
 }
 
 function OnChangeNegotiable() {
@@ -282,7 +325,7 @@ function OnSaveCV() {
                     toastr.success("CV success to submitted");
                     setTimeout(() => {
                         $('#mySpinner').css('display', 'none');
-
+                        OnClearForm();
                         OnLoadListCV();
                     }, 500);
                 }
@@ -343,7 +386,7 @@ function OnUpdateCV() {
                 toastr.success("CV success to submitted");
                 setTimeout(() => {
                     $('#mySpinner').css('display', 'none');
-
+                    OnClearForm();
                     OnLoadListCV();
                 }, 500);
             }

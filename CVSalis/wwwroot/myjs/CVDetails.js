@@ -5,6 +5,12 @@ var tempExpEdit= [];
 var rowTempExpDelete = 0;
 var isNego = false;
 var pathImage = "";
+// Older records may contain only the uploaded filename.
+function imageUrl(value) {
+    if (!value || value === '/Image/') return '';
+    return value.charAt(0) === '/' ? value : '/Image/' + value;
+}
+
 $(document).ready(function () {
     dtCV = $('#listData').DataTable({
         lengthMenu: [],
@@ -83,6 +89,8 @@ function eduYearKeyUp() {
 }
 
 function OnClearForm() {
+    pathImage = "";
+    $('#upload').val('');
     //header
     $('#uploadedAvatar').attr('src', '/theme/assets/img/avatars/1.png');
     $('#cvID').val('');
@@ -259,8 +267,8 @@ function OnUploadImage() {
         contentType: false,
         success: function (response) {
             if (response.message == "OK") {
-                pathImage = response.filePath;
-                $('#uploadedAvatar').attr('src', "/image/" + pathImage );
+                pathImage = imageUrl(response.filePath);
+                $('#uploadedAvatar').attr('src', pathImage );
                 console.log(pathImage);
             }
         }
@@ -296,7 +304,7 @@ function OnSaveCV() {
             birth_date: $('#birthDate').val(),
             address: $('#address').val(),
             ktp: $('#ktp').val(),
-            image: "/Image/" + pathImage,
+            image: pathImage,
             soft_skill: $('#softSkill').val(),
             hard_skill: $('#hardSkill').val(),
             gender: $('#gender').val(),
@@ -306,7 +314,7 @@ function OnSaveCV() {
             education_name: $('#eduName').val(),
             ipk: $('#eduIPK').val(),
             year_education: $('#eduYear').val(),
-            total_exp: $('#expSallary').val(),
+            total_exp: $('#countExp').val() || 0,
             npwp: $('#npwp').val(),
             position: $('#position').val(),
             focus_education: $('#eduFocused').val(),
@@ -367,7 +375,7 @@ function OnUpdateCV() {
         education_name: $('#eduName').val(),
         ipk: $('#eduIPK').val(),
         year_education: $('#eduYear').val(),
-        total_exp: $('#expSallary').val(),
+        total_exp: $('#countExp').val() || 0,
         npwp: $('#npwp').val(),
         position: $('#position').val(),
         focus_education: $('#eduFocused').val(),
@@ -466,8 +474,8 @@ function OnEditCV(obj) {
         success: function (respon) {
             var dataresp = JSON.parse(respon);
             if (dataresp.is_ok) {
-                $('#uploadedAvatar').attr('src', dataresp.dataDetail.image);
-                pathImage = dataresp.dataDetail.image;
+                pathImage = imageUrl(dataresp.dataDetail.image);
+                $('#uploadedAvatar').attr('src', pathImage || '/theme/assets/img/avatars/1.png');
                 $('#cvID').val(dataresp.dataDetail.employee_no);
                 $('#fullName').val(dataresp.dataDetail.employee_name);
                 $('#phoneNumber').val(dataresp.dataDetail.phone);

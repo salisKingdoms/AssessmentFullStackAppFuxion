@@ -110,6 +110,8 @@ namespace CVSalis.Data.Repo
                 }
                 //save
                 var saveCV = await conn.ExecuteAsync(query, param);
+                if (!request.isCreated) return;
+
                 var getLasID = GetLastIDCV();
                 if (getLasID.Result.employee_no > 0)
                 {
@@ -131,14 +133,14 @@ namespace CVSalis.Data.Repo
                             created_at = DateTime.UtcNow,
 
                         };
-                        var submitExp = CreateOrUpdateExperience(reqExp);
+                        await CreateOrUpdateExperience(reqExp);
                     }
 
                 }
             }
             catch (Exception ex)
             {
-                string message = ex.Message;
+                throw;
             }
         }
 
@@ -187,14 +189,14 @@ namespace CVSalis.Data.Repo
                 {
                     foreach (var exp in dataDB)
                     {
-                        detailExp.Add(new GetDataExperience
+                        if (exp.id.HasValue) detailExp.Add(new GetDataExperience
                         {
                             id = exp.id.Value,
                             employee_id = exp.employee_id.Value,
                             company = exp.company,
                             role = exp.role,
-                            periode_start = exp.periode_start.Value,
-                            periode_end = exp.periode_end.Value,
+                            periode_start = exp.periode_start.GetValueOrDefault(),
+                            periode_end = exp.periode_end.GetValueOrDefault(),
                             resposibility_desc = exp.resposibility_desc,
                             company_address = exp.company_address,
                             tech_tools = exp.tech_tools
@@ -233,6 +235,7 @@ namespace CVSalis.Data.Repo
                 return null;
             }
 
+            dataCV.total_exp = ExperienceYears.Calculate(dataCV.Experience_List);
             return dataCV;
         }
 
@@ -333,7 +336,13 @@ namespace CVSalis.Data.Repo
 
         public async Task<List<ms_employee>> GetListCV()
         {
-            var data = RepoGetAllCV().Result.ToList();
+            var data = (await RepoGetAllCV()).ToList();
+            using var connection = _context.CreateConnection();
+            var experiences = (await connection.QueryAsync<GetDataExperience>(
+                "SELECT employee_id, periode_start, periode_end FROM experience_employee WHERE employee_id = ANY(@ids)",
+                new { ids = data.Select(cv => cv.employee_no).ToArray() })).ToLookup(e => e.employee_id);
+            foreach (var cv in data)
+                cv.total_exp = ExperienceYears.Calculate(experiences[cv.employee_no]);
             return data;
         }
     }

@@ -37,7 +37,7 @@ namespace CVSalis.Controllers
         }
 
         [HttpPost]
-        public JsonResult SubmitNewCV(DetailCV param)
+        public async Task<JsonResult> SubmitNewCV(DetailCV param)
         {
             RespSaveData result = new RespSaveData();
             try
@@ -49,22 +49,16 @@ namespace CVSalis.Controllers
                     return Json(result);
                 }
 
-                if (param.Experience_List == null || param.Experience_List.Count < 0)
+                if (param.Experience_List == null || param.Experience_List.Count == 0)
                 {
                     result.is_ok = false;
                     result.messageUI = "Experience must be filled";
                     return Json(result);
                 }
 
-                //save CV and calculate total exp
-                if (param.Experience_List != null && param.Experience_List.Count > 0)
-                {
-                    var lasttExp = param.Experience_List.Last().periode_end;
-                    var firstExp = param.Experience_List.First().periode_start;
-                    param.total_exp = lasttExp - firstExp;
-                }
+                param.total_exp = ExperienceYears.Calculate(param.Experience_List);
                 param.isCreated = true;
-                var save = _cvRepo.CreateOrUpdateCV(param);
+                await _cvRepo.CreateOrUpdateCV(param);
                 result.is_ok = true;
                 result.messageUI = "success submit";
             }
@@ -79,7 +73,7 @@ namespace CVSalis.Controllers
         }
 
         [HttpPut]
-        public JsonResult EditCV(DetailCV param)
+        public async Task<JsonResult> EditCV(DetailCV param)
         {
             RespSaveData result = new RespSaveData();
             try
@@ -91,22 +85,17 @@ namespace CVSalis.Controllers
                     return Json(result);
                 }
 
-                if (param.Experience_List == null || param.Experience_List.Count < 0)
+                // Profile edits retain the existing, read-only experience list.
+                var existing = await _cvRepo.GetDetailCVById(param.employee_no);
+                if (existing == null || existing.employee_no == 0)
                 {
-                    result.is_ok = false;
-                    result.messageUI = "Experience must be filled";
+                    result.messageUI = "CV not found";
                     return Json(result);
                 }
-
-                if (param.Experience_List != null && param.Experience_List.Count > 0)
-                {
-                    var lasttExp = param.Experience_List.Last().periode_end;
-                    var firstExp = param.Experience_List.First().periode_start;
-                    param.total_exp = lasttExp - firstExp;
-                }
+                param.total_exp = ExperienceYears.Calculate(existing.Experience_List);
                 //save CV
                 param.isCreated = false;
-                var save = _cvRepo.CreateOrUpdateCV(param);
+                await _cvRepo.CreateOrUpdateCV(param);
                 result.is_ok = true;
                 result.messageUI = "success submit";
             }
@@ -208,7 +197,7 @@ namespace CVSalis.Controllers
             {
                 foreach (IFormFile source in Files)
                 {
-                    string FileName = source.FileName;
+                    string FileName = Guid.NewGuid().ToString("N") + Path.GetExtension(Path.GetFileName(source.FileName));
 
                     string filePath = GetActualPath(FileName);
 

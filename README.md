@@ -17,8 +17,9 @@
 <img width="959" alt="image" src="https://github.com/salisKingdoms/AssessmentFullStackAppFuxion/assets/149958647/da9e809c-3b2b-420f-8367-d0c9bbd0b771"> <br/>
 4. <strong>Form Edit and View CV </strong><br/>
    in this page you can edit your header CV but for experience currently cannot available for delete(now im still improve for delete and change experience when user edit CV) </br>
-<img width="959" alt="image" src="https://github.com/salisKingdoms/AssessmentFullStackAppFuxion/assets/149958647/91aea738-354e-4f8f-80d1-afe7376db728"> <br/>
-<img width="959" alt="image" src="https://github.com/salisKingdoms/AssessmentFullStackAppFuxion/assets/149958647/484ab390-7b81-4d53-8fdb-4b57513d9446"> <br/>
+<img width="959" alt="image" src="https://github.com/user-attachments/assets/13e0101c-ecaf-48ef-92cb-c355110af6df"> <br/>
+<img width="959" alt="image" src="https://github.com/user-attachments/assets/738b6afb-3eec-4405-b957-2e7ab82739ed"> <br/>
+
 5. <strong>Form PDF </strong><br/>
    in this page you can view and download your CV with pdf file </br>
 <img width="634" height="898" alt="image" src="https://github.com/user-attachments/assets/e4476562-3df8-4040-8f21-1faa11d92db6" /> <br/>

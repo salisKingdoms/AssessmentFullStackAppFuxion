@@ -5,7 +5,9 @@
 
 1. <strong>Form List CV </strong><br/>
    in this page you can add new CV, generate PDF, view or edit and delete CV<br/>
-<img width="959" alt="image" src="https://github.com/salisKingdoms/AssessmentFullStackAppFuxion/assets/149958647/57fae3c1-7ed8-4c3d-90b3-3d4e2f244234"> <br/>
+<img width="959" alt="image" src="https://github.com/user-attachments/assets/4a4f4f70-fb60-42c8-a1ed-1a1b924ba2f7"> <br/>
+
+
 2. <strong>Form Add New CV</strong><br/>
    in this page you can create new CV and upload your image</br>
 <img width="959" alt="image" src="https://github.com/salisKingdoms/AssessmentFullStackAppFuxion/assets/149958647/d82fe0d9-6ccd-4e9a-a171-4157c2e199ad"> <br/>

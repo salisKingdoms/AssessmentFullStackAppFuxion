@@ -19,5 +19,8 @@
 <img width="959" alt="image" src="https://github.com/salisKingdoms/AssessmentFullStackAppFuxion/assets/149958647/484ab390-7b81-4d53-8fdb-4b57513d9446"> <br/>
 5. <strong>Form PDF </strong><br/>
    in this page you can view and download your CV with pdf file </br>
-<img width="959" alt="image" src="https://github.com/salisKingdoms/AssessmentFullStackAppFuxion/assets/149958647/4ff25c8e-7661-43f2-97c1-0591a396aae7"> <br/>
+<img width="634" height="898" alt="image" src="https://github.com/user-attachments/assets/e4476562-3df8-4040-8f21-1faa11d92db6" /> <br/>
+
+
+
 

@@ -413,6 +413,27 @@
                 </div>
             </div>
         </div>
+
+        <div class="modal fade" id="modalprintCV" aria-labelledby="modalToggleLabel2" tabindex="-1" style="display: none" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="modalToggleLabel2">Print Confirmation</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        Are you sure, you want to generate CV PDF?
+                        <p>if unsure you can go to cancel....</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-danger me-2" data-bs-target="#modalToggle3" data-bs-toggle="modal" data-bs-dismiss="modal" onclick="OnPrintCVOK()">
+                            Yes
+                        </button>
+                        <button type="reset" class="btn btn-outline-secondary" onclick="OnCloseModalPrintCV()">Cancel</button>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 

@@ -419,7 +419,7 @@ function OnLoadListCV() {
                     $.each(dataresp.listCV, function (i, data) {//Name,pos,gender,phone,email,total
                         var genders = (data.gender == 2 ? "Female" : "Male");
                         var htmlRow = $("<tr>" + '<td style="display:none; text-align:center;">' + data.employee_no + "</td>" +
-                            '<td  style="text-align: center;">' + '<button id=' + data.employee_no + ' class="btn btn-primary me-2"  type="submit"  onclick=OnPDFCV(this);  >PDF</a>' + "</td>" +
+                            '<td  style="text-align: center;">' + '<button id=' + data.employee_no + ' class="btn btn-primary me-2"  type="submit"  onclick=OnPrintCVOK(this);  >PDF</a>' + "</td>" +
                             '<td  style="text-align: center;">' + '<button id=' + data.employee_no + ' class="btn btn-primary me-2"  type="submit"  onclick=OnEditCV(this); >Edit</button>' + "</td>" +
                             '<td  style="text-align: center;">' + '<button id=' + data.employee_no + ' class="btn btn-danger me-2"  type="submit"  onclick=OnDeletedCV(this); >Delete</button>' + "</td>" +
                             '<td style="text-align:center;">' + data.employee_name + "</td>" +
@@ -600,6 +600,10 @@ function OnCloseModalCV() {
     $('#modalExpCVList').modal("hide");
 }
 
+function OnPrintCVOK(obj) {
+    $('#modalprintCV').modal("show");
+    OnPDFCV(obj);
+}
 function OnPDFCV(obj) {
     var cvIdChoosen = parseInt($(obj).attr('id'));
     $('#mySpinner').css('display', 'block');

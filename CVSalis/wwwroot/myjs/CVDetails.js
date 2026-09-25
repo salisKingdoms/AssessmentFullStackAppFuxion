@@ -3,6 +3,7 @@ var dtCV = null;
 var tempExpNew = [];
 var tempExpEdit= [];
 var rowTempExpDelete = 0;
+var rowTempCVPrint = 0;
 var isNego = false;
 var pathImage = "";
 $(document).ready(function () {
@@ -16,6 +17,10 @@ $(document).ready(function () {
         lengthMenu: [],
         lengthChange: false,
         searching: false
+    });
+    $('#modalprintCV').on('hidden.bs.modal', function () {
+        $('#modalprintCV').css('display', 'none');
+        rowTempCVPrint = 0;
     });
 });
 
@@ -419,7 +424,7 @@ function OnLoadListCV() {
                     $.each(dataresp.listCV, function (i, data) {//Name,pos,gender,phone,email,total
                         var genders = (data.gender == 2 ? "Female" : "Male");
                         var htmlRow = $("<tr>" + '<td style="display:none; text-align:center;">' + data.employee_no + "</td>" +
-                            '<td  style="text-align: center;">' + '<button id=' + data.employee_no + ' class="btn btn-primary me-2"  type="submit"  onclick=OnPrintCVOK(this);  >PDF</a>' + "</td>" +
+                            '<td  style="text-align: center;">' + '<button id=' + data.employee_no + ' class="btn btn-primary me-2"  type="button"  onclick=OnPrintCV(this);  >PDF</button>' + "</td>" +
                             '<td  style="text-align: center;">' + '<button id=' + data.employee_no + ' class="btn btn-primary me-2"  type="submit"  onclick=OnEditCV(this); >Edit</button>' + "</td>" +
                             '<td  style="text-align: center;">' + '<button id=' + data.employee_no + ' class="btn btn-danger me-2"  type="submit"  onclick=OnDeletedCV(this); >Delete</button>' + "</td>" +
                             '<td style="text-align:center;">' + data.employee_name + "</td>" +
@@ -600,12 +605,35 @@ function OnCloseModalCV() {
     $('#modalExpCVList').modal("hide");
 }
 
-function OnPrintCVOK(obj) {
-    $('#modalprintCV').modal("show");
-    OnPDFCV(obj);
-}
-function OnPDFCV(obj) {
+function OnPrintCV(obj) {
     var cvIdChoosen = parseInt($(obj).attr('id'));
+    rowTempCVPrint = cvIdChoosen;
+    $('#modalprintCV').css('display', 'block');
+    $('#modalprintCV').modal("show");
+}
+
+function OnPrintCVOK(obj) {
+    if (obj) {
+        OnPrintCV(obj);
+        return;
+    }
+    var cvIdToPrint = rowTempCVPrint;
+    $('#modalprintCV').css('display', 'none');
+    $('#modalprintCV').modal("hide");
+    if (cvIdToPrint) {
+        OnPDFCV(cvIdToPrint);
+        rowTempCVPrint = 0;
+    }
+}
+
+function OnCloseModalPrintCV() {
+    $('#modalprintCV').css('display', 'none');
+    $('#modalprintCV').modal("hide");
+    rowTempCVPrint = 0;
+}
+
+function OnPDFCV(cvId) {
+    var cvIdChoosen = (typeof cvId === 'object' && cvId !== null) ? parseInt($(cvId).attr('id')) : parseInt(cvId);
     $('#mySpinner').css('display', 'block');
     var paramData = {
         cvID: cvIdChoosen
@@ -620,12 +648,14 @@ function OnPDFCV(obj) {
                 $('#mySpinner').css('display', 'none');
             }
             else {
-    
                 var str = response.data.filePath;
                 window.open(str, '_blank');
-                
                 $('#mySpinner').css('display', 'none');
             }
+        },
+        error: function () {
+            toastr.error("Error generating PDF");
+            $('#mySpinner').css('display', 'none');
         }
     });
 }

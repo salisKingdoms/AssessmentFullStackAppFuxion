@@ -5,7 +5,11 @@ var tempExpEdit= [];
 var rowTempExpDelete = 0;
 var isNego = false;
 var pathImage = "";
+var pendingPrintCVId = null;
 $(document).ready(function () {
+    $('#modalprintCV').on('hidden.bs.modal', function () {
+        pendingPrintCVId = null;
+    });
     dtCV = $('#listData').DataTable({
         lengthMenu: [],
         lengthChange: false,
@@ -601,11 +605,20 @@ function OnCloseModalCV() {
 }
 
 function OnPrintCVOK(obj) {
+    pendingPrintCVId = parseInt($(obj).attr('id'));
     $('#modalprintCV').modal("show");
-    OnPDFCV(obj);
 }
-function OnPDFCV(obj) {
-    var cvIdChoosen = parseInt($(obj).attr('id'));
+function OnConfirmPrintCV() {
+    if (pendingPrintCVId === null || isNaN(pendingPrintCVId)) {
+        return;
+    }
+
+    var cvIdChoosen = pendingPrintCVId;
+    pendingPrintCVId = null;
+    $('#modalprintCV').modal("hide");
+    OnPDFCV(cvIdChoosen);
+}
+function OnPDFCV(cvIdChoosen) {
     $('#mySpinner').css('display', 'block');
     var paramData = {
         cvID: cvIdChoosen

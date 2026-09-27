@@ -59,12 +59,14 @@
         public long? employee_id { get; set; }
         public string? company { get; set; }
         public string? role { get; set; }
-        public int? periode_start { get; set; }
-        public int? periode_end { get; set; }
+        public DateTime? periode_start { get; set; }
+        public DateTime? periode_end { get; set; }
         public string? resposibility_desc { get; set; }
         public string? company_address { get; set; }
         public string? tech_tools { get; set; }
         public bool is_deleted { get; set; }
+        public DateTime? periode_start_dt { get; set; }
+        public DateTime? periode_end_dt { get; set; }
     }
 
     public class GetDataExperience
@@ -73,8 +75,8 @@
         public long employee_id { get; set; }
         public string company { get; set; }
         public string role { get; set; }
-        public int periode_start { get; set; }
-        public int periode_end { get; set; }
+        public DateTime periode_start { get; set; }
+        public DateTime periode_end { get; set; }
         public string resposibility_desc { get; set; }
         public string company_address { get; set; }
         public string tech_tools { get; set; }

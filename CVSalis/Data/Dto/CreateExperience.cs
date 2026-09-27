@@ -16,5 +16,7 @@
         public DateTime created_at { get; set; }
         public string updated_by { get; set; }
         public DateTime updated_at { get; set; }
+        public DateTime periode_start_dt { get; set; }
+        public DateTime periode_end_dt { get; set; }
     }
 }

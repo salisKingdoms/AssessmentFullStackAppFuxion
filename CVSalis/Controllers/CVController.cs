@@ -59,8 +59,8 @@ namespace CVSalis.Controllers
                 //save CV and calculate total exp
                 if (param.Experience_List != null && param.Experience_List.Count > 0)
                 {
-                    var lasttExp = param.Experience_List.Last().periode_end;
-                    var firstExp = param.Experience_List.First().periode_start;
+                    var lasttExp = param.Experience_List.Last().periode_end.Year;
+                    var firstExp = param.Experience_List.First().periode_start.Year;
                     param.total_exp = lasttExp - firstExp;
                 }
                 param.isCreated = true;
@@ -100,8 +100,8 @@ namespace CVSalis.Controllers
 
                 if (param.Experience_List != null && param.Experience_List.Count > 0)
                 {
-                    var lasttExp = param.Experience_List.Last().periode_end;
-                    var firstExp = param.Experience_List.First().periode_start;
+                    var lasttExp = param.Experience_List.Last().periode_end.Year;
+                    var firstExp = param.Experience_List.First().periode_start.Year;
                     param.total_exp = lasttExp - firstExp;
                 }
                 //save CV

@@ -122,8 +122,8 @@ namespace CVSalis.Data.Repo
                             employee_id = getLasID.Result.employee_no,
                             company = req.company,
                             role = req.role,
-                            periode_start = req.periode_start,
-                            periode_end = req.periode_end,
+                            periode_start_dt = req.periode_start,
+                            periode_end_dt = req.periode_end,
                             resposibility_desc = req.resposibility_desc,
                             company_address = req.company_address,
                             tech_tools = req.tech_tools,
@@ -193,8 +193,8 @@ namespace CVSalis.Data.Repo
                             employee_id = exp.employee_id.Value,
                             company = exp.company,
                             role = exp.role,
-                            periode_start = exp.periode_start.Value,
-                            periode_end = exp.periode_end.Value,
+                            periode_start = exp.periode_start_dt.Value,
+                            periode_end = exp.periode_end_dt.Value,
                             resposibility_desc = exp.resposibility_desc,
                             company_address = exp.company_address,
                             tech_tools = exp.tech_tools
@@ -244,9 +244,9 @@ namespace CVSalis.Data.Repo
                 string query = String.Empty;
 
                 query = "INSERT INTO experience_employee" +
-                            "(employee_id,company,role,periode_start,periode_end,resposibility_desc,company_address,tech_tools,created_by,created_at,updated_by,updated_at)" +
+                            "(employee_id,company,role,resposibility_desc,company_address,tech_tools,created_by,created_at,updated_by,updated_at,periode_start_dt,periode_end_dt)" +
                             "VALUES" +
-                            "(@employee_id,@company,@role,@periode_start,@periode_end,@resposibility_desc,@company_address,@tech_tools,@created_by,@created_at,@updated_by,@updated_at)";
+                            "(@employee_id,@company,@role,@resposibility_desc,@company_address,@tech_tools,@created_by,@created_at,@updated_by,@updated_at,@periode_start_dt,@periode_end_dt)";
 
                 if (!request.isCreated)
                 {
@@ -254,8 +254,8 @@ namespace CVSalis.Data.Repo
                             SET employee_id=@employee_id,
                             company=@company,
                             role=@role,
-                            periode_start=@periode_start,
-                            periode_end=@periode_end,
+                            periode_start_dt=@periode_start_dt,
+                            periode_end_dt=@periode_end_dt,
                             resposibility_desc=@resposibility_desc,
                             company_address=@company_address,
                             tech_tools=@tech_tools,
@@ -269,15 +269,15 @@ namespace CVSalis.Data.Repo
                 {"employee_id", request.employee_id },
                 {"company", request.company },
                 {"role", request.role },
-                {"periode_start", request.periode_start },
-                {"periode_end",request.periode_end },
                 {"resposibility_desc",request.resposibility_desc },
                 {"company_address", request.company_address },
                 {"tech_tools",request.tech_tools },
                 {"created_by",request.created_by },
                 {"created_at",request.created_at },
                 {"updated_by",!request.isCreated ? request.updated_by : "" },
-                {"updated_at",!request.isCreated ? request.updated_at :null }
+                {"updated_at",!request.isCreated ? request.updated_at :null },
+                {"periode_start_dt", request.periode_start_dt },
+                {"periode_end_dt",request.periode_end_dt }
             };
 
                 if (!request.isCreated)

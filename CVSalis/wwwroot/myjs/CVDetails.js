@@ -6,6 +6,22 @@ var rowTempExpDelete = 0;
 var isNego = false;
 var pathImage = "";
 $(document).ready(function () {
+
+    flatpickr("#datePickerFrm", {
+        dateFormat: "Y-m-d",
+        altInput: true,
+        altFormat: "F j, Y",
+        static: true
+    });
+
+    flatpickr("#datePickerTo", {
+        dateFormat: "Y-m-d",
+        altInput: true,
+        altFormat: "F j, Y",
+        static: true
+    });
+
+
     dtCV = $('#listData').DataTable({
         lengthMenu: [],
         lengthChange: false,
@@ -139,7 +155,7 @@ function OnChangeNegotiable() {
 }
 
 function onAddNewExp(obj, id) {
-    if ($('#start').val() == '' && $('#end').val() == ''  && $('#role').val() == '' && $('#companyName').val() == '' && $('#addressComp').val() == '' && $('#tools').val() == '' && $('#respDesc').val() == '') {
+    if ($('#start').val() == '' && $('#end').val() == '' && $('#role').val() == '' && $('#companyName').val() == '' && $('#addressComp').val() == '' && $('#tools').val() == '' && $('#respDesc').val() == '' && $('#datePickerFrm').val('') == '' && $('#datePickerTo').val('')) {
         $('#modalExpAlert').css('display', 'block');
         $('#modalExpAlert').modal("show");
     }
@@ -158,7 +174,9 @@ function onAddNewExp(obj, id) {
             companyName: $('#companyName').val(),
             compAddress: $('#addressComp').val(),
             tools: $('#tools').val(),
-            responsibility: $('#respDesc').val()
+            responsibility: $('#respDesc').val(),
+            startDate: $('#datePickerFrm').val(),
+            endDate: $('#datePickerTo').val()
         };
 
         console.log(dataExp);
@@ -168,8 +186,8 @@ function onAddNewExp(obj, id) {
             '<td style="text-align:center;">' + dataExp.companyName + "</td>" +
             '<td style="text-align:center;">' + dataExp.role + "</td>" +
             '<td style="text-align:center;">' + dataExp.compAddress + "</td>" +
-            '<td style="text-align:center;">' + dataExp.startYear + "</td>" +
-            '<td style="text-align:center;">' + dataExp.endYear + "</td>" +
+            '<td style="text-align:center;">' + dataExp.startDate + "</td>" +
+            '<td style="text-align:center;">' + dataExp.endDate + "</td>" +
             '<td style="text-align:center;">' + dataExp.tools + "</td>" +
             '<td style="text-align:center;">' + dataExp.responsibility + "</td></tr>");
 
@@ -183,6 +201,8 @@ function onAddNewExp(obj, id) {
         $('#addressComp').val('');
         $('#tools').val('');
         $('#respDesc').val('');
+        $('#datePickerFrm').val('');
+        $('#datePickerTo').val('');
     }
     
 
@@ -278,8 +298,8 @@ function OnSaveCV() {
                     company: data.companyName,
                     company_address: data.compAddress,
                     role: data.role,
-                    periode_start: data.startYear,
-                    periode_end: data.endYear,
+                    periode_start: data.startDate,
+                    periode_end: data.endDate,
                     resposibility_desc: data.responsibility,
                     tech_tools: data.tools
                 };
@@ -629,3 +649,4 @@ function OnPDFCV(obj) {
         }
     });
 }
+

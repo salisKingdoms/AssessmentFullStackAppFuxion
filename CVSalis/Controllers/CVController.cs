@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using System.Reflection;
 using CVSalis.Data.Dto;
@@ -252,6 +252,12 @@ namespace CVSalis.Controllers
                 //string layoutContent = System.IO.File.ReadAllText(layoutPath);
                 //string mergedHtml = Engine.Razor.RunCompile(layoutContent, "layoutKey", null, new { BodyContent = htmlPDF });
                 HtmlToPdf converter = new HtmlToPdf();
+                converter.Options.PdfPageSize = PdfPageSize.A4;
+                converter.Options.MarginTop = 24;
+                converter.Options.MarginBottom = 24;
+                converter.Options.MarginLeft = 24;
+                converter.Options.MarginRight = 24;
+                converter.Options.WebPageWidth = 800;
                 PdfDocument doc = converter.ConvertHtmlString(htmlPDF);
 
                 byte[] pdfFile = doc.Save();
@@ -282,162 +288,112 @@ namespace CVSalis.Controllers
 
         public static string GetHTMLStringNew(DetailCV dataCV, string hostingPath)
         {
-            var sb = new StringBuilder();
-            string[] parts = dataCV.image.Split('/');
-            string imageName = parts[parts.Length - 1];
-            int yearDate = dataCV.birth_date.Year;
-            int now = DateTime.UtcNow.Year;
-            dataCV.ages = now - yearDate;
-            sb.AppendFormat(@"
-            <html>
-                <head>
-                    <link rel='stylesheet' href='{0}\\Theme\\assets\\vendor\\fonts\\boxicons.css'/>
-                    <link rel='stylesheet' href='{0}\\css\\sb-admin-2.css' />
-                    <link rel='stylesheet' href='{0}\\Theme\\assets\\vendor\\css\\core.css' class='template-customizer-core-css'/>
-                    <link rel='stylesheet' href='{0}\\Theme\\assets\\vendor\\css\\theme-default.css' class='template-customizer-theme-css'/>
-                    <link rel='stylesheet' href='{0}\\Theme\\assets\\vendor\\css\\demo.css'/>
-                    
+            // Print styles must not inherit responsive grids or fixed-height screen cards.
+            var sb = new StringBuilder(@"<!DOCTYPE html>
+<html><head><meta charset='utf-8'><style>
+* { box-sizing: border-box; }
+body { margin: 0; color: #303846; font: 14px/1.5 Arial, sans-serif; }
+h1 { margin: 0; color: #5146b8; font-size: 25px; }
+h2 { margin: 20px 0 10px; padding-bottom: 5px; border-bottom: 1px solid #cbd0d8;
+     font-size: 16px; page-break-after: avoid; }
+h3 { margin: 0 0 5px; font-size: 14px; page-break-after: avoid; }
+p { margin: 0 0 8px; }
+.header { width: 100%; table-layout: fixed; border-collapse: collapse; }
+.header td { vertical-align: top; }
+.photo-cell { width: 160px; padding-right: 20px; }
+.photo { width: 140px; height: 140px; border-radius: 4px; }
+.photo-empty { width: 140px; height: 140px; border: 1px solid #cbd0d8;
+               border-radius: 50%; background: white; }
+.field { margin: 4px 0; }
+.label { font-weight: bold; }
+.text { white-space: pre-wrap; word-wrap: break-word; overflow-wrap: break-word; }
+.entry { margin-bottom: 14px; }
+.entry + .entry { padding-top: 12px; border-top: 1px solid #e0e3e8; }
+.education { page-break-inside: avoid; }
+ul { margin: 4px 0 12px; padding-left: 22px; }
+li { word-wrap: break-word; }
+</style></head><body><table class='header'><tr><td class='photo-cell'>");
+            var photo = GetPdfPhotoUri(dataCV.image, hostingPath);
+            if (photo == null)
+                sb.Append("<div class='photo-empty'></div>");
+            else
+                // Like Edit, show the entire square image without circular clipping.
+                sb.AppendFormat("<div><img class='photo' src='{0}' alt='' onerror=\"this.style.display='none';this.parentNode.className='photo-empty';\"></div>", PdfText(photo));
 
-                    <script src='{0}\\Theme\\assets\\vendor\\js\\helpers.js'/></script>
-                    <script  src='{0}\\Theme\\assets\\js\\config.js'/></script>
-                    
-                </head>
-                <body>
-                 
-                    <div class='card'>
-                       <div class='d-flex align-items-end row'>
-                             <div class='col-sm-3'>
-                                    <div class='card-body pb-3 px-3 px-md-4' style='display:flex;justify-content:center;align-items:center;margin:auto;'>
-                                        <img src='{0}\Image\{1}' style='border-radius: 50%;box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);' height='140' width='140' alt='View Badge User' />
-                                    </div>
-                             </div>
-                            <div class='col-sm-9 text-right text-sm-left'>
-                                <h5 class='card-title control-label text-primary'><b>{2}</b><br /> {3}</h5>
-                            
-                            <div class='row'>
-                                <div class='col-sm-2 text-sm-left'>
-                                        <p>Age<br />{4} years</p>
-                                </div>
-                                <div class='col-sm-2'>
-                                        <p>Phone<br />{5}</p>
-                                </div>
-                                <div class='col-sm-3'>
-                                        <p> Email<br />{6}</p>
-                                </div>
-                                <div class='col-sm-2'>
-                                        <p>Experience<br />{7} years</p>
-                                </div>
-                                <div class='col-sm-3'>
-                                        <p>Location<br />{8}</p>
-                                </div>
-                            </div>
-                       </div>
-                    </div>", hostingPath, imageName, dataCV.employee_name, dataCV.position, dataCV.ages, dataCV.phone, dataCV.email, dataCV.total_exp,dataCV.address);
-
-            sb.AppendFormat(@"<div class='col-md-12 row' style='margin-top:20px;padding-left:40px;padding-right:40px;'>
-                              <hr class='col-md-12'>
-                                <div class='card col-sm-8 '>
-                                    <label class='control-label' style='margin-top:8px;margin-bottom:5px;'>
-                                    <strong>EXPERIENCE</strong></label>
-                                    <hr> ");
-            foreach(var detail in dataCV.Experience_List)
+            int age = DateTime.UtcNow.Year - dataCV.birth_date.Year;
+            sb.AppendFormat("</td><td><h1 class='text'>{0}</h1><p class='text'>{1}</p>",
+                PdfText(dataCV.employee_name), PdfText(dataCV.position));
+            AppendPdfField(sb, "Age", age + " years");
+            AppendPdfField(sb, "Phone", dataCV.phone);
+            AppendPdfField(sb, "Email", dataCV.email);
+            AppendPdfField(sb, "Experience", dataCV.total_exp + " years");
+            AppendPdfField(sb, "Location", dataCV.address);
+            sb.Append("</td></tr></table><h2>EXPERIENCE</h2>");
+            if (dataCV.Experience_List != null)
             {
-                sb.AppendFormat(@"<label class='control-label'>
-                    <strong>{0}-{1} <br />{2}<br />{3}</strong>
-                </label>
-                 <label class='control-label'>
-                    {4}
-                </label>
-                <label class ='control-label'><strong>Tools :</strong><br />
-                   {5}
-                </label>
-                <br /><hr>", detail.periode_start,detail.periode_end,detail.company,detail.role,detail.resposibility_desc,detail.tech_tools);
+                foreach (var detail in dataCV.Experience_List)
+                {
+                    sb.AppendFormat(@"<div class='entry'><h3 class='text'>{0}-{1}<br>{2}<br>{3}</h3>
+<p class='text'>{4}</p>", detail.periode_start, detail.periode_end,
+                        PdfText(detail.company), PdfText(detail.role), PdfText(detail.resposibility_desc));
+                    AppendPdfField(sb, "Tools", detail.tech_tools);
+                    sb.Append("</div>");
+                }
             }
-            sb.AppendFormat(@"</div>");//tutup div utk experience
-            //hardskill split with,
-            List<string> hardskill = new List<string>();
-            hardskill = dataCV.hard_skill.Split(',').ToList();
-
-            //header hardskill
-            sb.AppendFormat(@"<div class='card col-sm-4 h-800'>
-                                <label class='control-label' style='margin-top:8px;margin-bottom:5px;'>
-                                    <strong>SKILLS</strong>
-                                </label>
-                                <hr>
-                                <label class='control-label' style='margin-top:5px;margin-bottom:5px;'>
-                                    <strong>Hard Skill :</strong>
-                                </label>
-                                <label class='control-label'>
-                                <strong><ul>");
-            for(int i = 0; i<=hardskill.Count-1;i++)
-            {
-                sb.AppendFormat(@"<li>{0}</li>", hardskill[i]);
-            }
-            sb.AppendFormat(@"</ul></strong>
-                          </label>
-                          
-                          <label class='control-label' style='margin-top:5px;margin-bottom:5px;'>
-                            <strong>Soft Skill :</strong>
-                          </label>
-                          <label class='control-label'><ul>");
-
-            //softskill split with,
-            List<string> softskill = new List<string>();
-            softskill = dataCV.soft_skill.Split(',').ToList();
-
-            for(int i=0; i <= softskill.Count-1; i++)
-            {
-                sb.AppendFormat(@" <li>{0}</li>", softskill[i]);
-            }
-            //sb.AppendFormat(@"</label>
-            //                <br /><br />
-            //                <hr>
-            //                    <label class='control-label' style='margin-top:8px;margin-bottom:5px;'>
-            //                        <strong>EDUCATION</strong>
-            //                    </label>
-            //                    <label class='control-label'>
-            //                        <strong>
-            //                           <i class='bx bxs-graduation'></i>&nbsp;{0} <br />
-            //                            &nbsp;&nbsp;&nbsp; Graduate on {1} <br />&nbsp;&nbsp; &nbsp;{2} Of {3}
-            //                            <br />&nbsp;&nbsp;&nbsp; {4}
-            //                        </strong>
-            //                    </label>
-            //                  </div>
-            //                </div>
-            //              </div>
-            //          </body>
-            //       </html>",dataCV.education_name,dataCV.year_education,dataCV.education_type,dataCV.focus_education,dataCV.ipk);
-            sb.AppendFormat(@"</ul></label>
-                            <br /><br />
-                           
-                                <label class='control-label' style='margin-top:8px;margin-bottom:5px;'>
-                                    <strong>EDUCATION</strong>
-                                </label>
-                                <label class='control-label'>
-                                    <strong>
-                                        &nbsp;&nbsp;&nbsp;{0} <br />
-                                        &nbsp;&nbsp;&nbsp; Graduate on {1} <br />&nbsp;&nbsp; &nbsp;{2} Of {3}
-                                        <br />&nbsp;&nbsp;&nbsp;IPK {4}
-                                    </strong>
-                                </label>
-                              </div>
-                            </div>
-                          </div>", dataCV.education_name, dataCV.year_education, dataCV.education_type, dataCV.focus_education, dataCV.ipk);
-
-
-            sb.AppendFormat(@"<script src='{0}\\Theme\\assets\\vendor\\libs\\jquery\\jquery.js'/></script>
-<script src='{0}\\Theme\\assets\\vendor\\libs\\popper\\popper.js'/></script>
-<script src='{0}\\Theme\\assets\\vendor\\js\\bootstrap.js'/></script>
-<script src='{0}\\Theme\\assets\\vendor\\libs\\perfect-scrollbar\\perfect-scrollbar.js'/></script>
-<script src='{0}\\Theme\\assets\\vendor\\js\\menu.js'/></script>
-<script src='{0}\\Theme\\assets\\js\\main.js'/></script>
-</body></html>", hostingPath);
-                      
-                  
-
-
-
+            sb.Append("<h2>SKILLS</h2>");
+            AppendPdfSkills(sb, "Hard Skill", dataCV.hard_skill);
+            AppendPdfSkills(sb, "Soft Skill", dataCV.soft_skill);
+            sb.Append("<div class='education'><h2>EDUCATION</h2>");
+            AppendPdfField(sb, "University", dataCV.education_name);
+            AppendPdfField(sb, "Graduation year", dataCV.year_education);
+            AppendPdfField(sb, "Degree", dataCV.education_type);
+            AppendPdfField(sb, "Major", dataCV.focus_education);
+            AppendPdfField(sb, "GPA (IPK)", dataCV.ipk);
+            sb.Append("</div></body></html>");
             return sb.ToString();
+        }
+
+        private static string PdfText(object? value) =>
+            System.Net.WebUtility.HtmlEncode(Convert.ToString(value, CultureInfo.InvariantCulture) ?? "");
+
+        private static void AppendPdfField(StringBuilder sb, string label, object? value)
+        {
+            sb.AppendFormat("<div class='field'><span class='label'>{0}: </span><span class='text'>{1}</span></div>",
+                PdfText(label), PdfText(value));
+        }
+
+        private static void AppendPdfSkills(StringBuilder sb, string label, string? skills)
+        {
+            sb.AppendFormat("<h3>{0}</h3><ul>", PdfText(label));
+            foreach (var skill in (skills ?? "").Split(',', StringSplitOptions.RemoveEmptyEntries))
+            {
+                if (!string.IsNullOrWhiteSpace(skill))
+                    sb.AppendFormat("<li class='text'>{0}</li>", PdfText(skill.Trim()));
+            }
+            sb.Append("</ul>");
+        }
+
+        private static string? GetPdfPhotoUri(string? imagePath, string hostingPath)
+        {
+            // Edit uses the saved URL verbatim. Do not map a broken URL's basename
+            // to a different file in /Image, or substitute a theme/default avatar.
+            if (string.IsNullOrWhiteSpace(imagePath) ||
+                !imagePath.StartsWith("/Image/", StringComparison.OrdinalIgnoreCase))
+                return null;
+
+            try
+            {
+                var imageRoot = Path.GetFullPath(Path.Combine(hostingPath, "Image")) + Path.DirectorySeparatorChar;
+                var relativePath = Uri.UnescapeDataString(imagePath.Substring("/Image/".Length));
+                var fullPath = Path.GetFullPath(Path.Combine(imageRoot, relativePath));
+                if (!fullPath.StartsWith(imageRoot, StringComparison.OrdinalIgnoreCase) || !System.IO.File.Exists(fullPath))
+                    return null;
+                return new Uri(fullPath).AbsoluteUri;
+            }
+            catch (Exception ex) when (ex is ArgumentException || ex is IOException || ex is NotSupportedException)
+            {
+                return null;
+            }
         }
     }
 }
